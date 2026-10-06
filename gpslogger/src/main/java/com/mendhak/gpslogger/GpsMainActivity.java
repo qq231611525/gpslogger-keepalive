@@ -39,12 +39,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -63,16 +61,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.ActionMenuItemView;
-import androidx.appcompat.widget.ActionMenuView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -135,7 +128,6 @@ import eltos.simpledialogfragment.list.SimpleListDialog;
 
 public class GpsMainActivity extends AppCompatActivity
         implements
-        Toolbar.OnMenuItemClickListener,
         SimpleDialog.OnDialogResultListener,
         ActionBar.OnNavigationListener {
 
@@ -1090,79 +1082,22 @@ public class GpsMainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        Toolbar toolbarBottom = (Toolbar) findViewById(R.id.toolbarBottom);
-
-        if(toolbarBottom.getMenu().size() > 0){ return true;}
-
-        toolbarBottom.inflateMenu(R.menu.gps_bottom);
-        setupEvenlyDistributedToolbar();
-        toolbarBottom.setOnMenuItemClickListener(this);
+        // 底部栏已改为 LinearLayout 双按钮，直接绑点击事件
+        findViewById(R.id.btnExportConfig).setOnClickListener(v -> {
+            if (!isUserAllowedToChangePreferences()) {
+                return;
+            }
+            exportConfig();
+        });
+        findViewById(R.id.btnImportConfig).setOnClickListener(v -> {
+            if (!isUserAllowedToChangePreferences()) {
+                return;
+            }
+            importConfig();
+        });
 
         enableDisableMenuItems();
         return true;
-    }
-
-    public void setupEvenlyDistributedToolbar(){
-        //http://stackoverflow.com/questions/26489079/evenly-spaced-menu-items-on-toolbar
-
-        // Use Display metrics to get Screen Dimensions
-        Display display = getWindowManager().getDefaultDisplay();
-        DisplayMetrics metrics = new DisplayMetrics();
-        display.getMetrics(metrics);
-
-        // Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarBottom);
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.content_layout), (v, windowInsets) -> {
-            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
-
-            // Apply the insets as a margin to the view so it doesn't overlap with status bar
-            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            mlp.leftMargin = insets.left;
-            mlp.bottomMargin = insets.bottom;
-            mlp.rightMargin = insets.right;
-            // mlp.topMargin = insets.top;
-            v.setLayoutParams(mlp);
-
-            // Alternatively set the padding on the view itself.
-            // v.setPadding(0, 0, 0, 0);
-
-            // Return CONSUMED if you don't want want the window insets to keep passing down to descendant views.
-            // return windowInsets;
-            return WindowInsetsCompat.CONSUMED;
-        });
-
-        // Add 10 spacing on either side of the toolbar
-        toolbar.setContentInsetsAbsolute(10, 10);
-
-        // Get the ChildCount of your Toolbar, this should only be 1
-        int childCount = toolbar.getChildCount();
-        // Get the Screen Width in pixels
-        int screenWidth = metrics.widthPixels;
-
-        // Create the Toolbar Params based on the screenWidth
-        Toolbar.LayoutParams toolbarParams = new Toolbar.LayoutParams(screenWidth, Toolbar.LayoutParams.WRAP_CONTENT);
-
-        // 延迟到布局完成后再排，保证菜单项已就位
-        toolbar.post(() -> {
-            int childCount2 = toolbar.getChildCount();
-            for (int i = 0; i < childCount2; i++) {
-                View childView = toolbar.getChildAt(i);
-                if (childView instanceof ViewGroup) {
-                    childView.setLayoutParams(toolbarParams);
-                    int innerChildCount = ((ViewGroup) childView).getChildCount();
-                    int itemWidth = (screenWidth / innerChildCount);
-                    ActionMenuView.LayoutParams params = new ActionMenuView.LayoutParams(itemWidth, Toolbar.LayoutParams.WRAP_CONTENT);
-                    for (int j = 0; j < innerChildCount; j++) {
-                        View grandChild = ((ViewGroup) childView).getChildAt(j);
-                        if (grandChild instanceof ActionMenuItemView) {
-                            grandChild.setLayoutParams(params);
-                        }
-                    }
-                }
-            }
-            toolbar.requestLayout();
-        });
     }
 
     private void enableDisableMenuItems() {
@@ -1170,102 +1105,10 @@ public class GpsMainActivity extends AppCompatActivity
         onWaitingForLocation(session.isWaitingForLocation());
         setBulbStatus();
 
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbarBottom);
-        MenuItem mnuAnnotate = toolbar.getMenu().findItem(R.id.mnuAnnotate);
-        MenuItem mnuOnePoint = toolbar.getMenu().findItem(R.id.mnuOnePoint);
-        MenuItem mnuAutoSendNow = toolbar.getMenu().findItem(R.id.mnuAutoSendNow);
-
-        if (mnuOnePoint != null) {
-            mnuOnePoint.setEnabled(!session.isStarted());
-            mnuOnePoint.setIcon((session.isStarted() ? R.drawable.singlepoint_disabled : R.drawable.singlepoint));
-        }
-
-        if (mnuAutoSendNow != null) {
-            mnuAutoSendNow.setEnabled(session.isStarted());
-        }
-
-        if (mnuAnnotate != null) {
-
-            if (!preferenceHelper.shouldLogToCSV() && !preferenceHelper.shouldLogToGpx()
-                    && !preferenceHelper.shouldLogToKml() && !preferenceHelper.shouldLogToCustomUrl()
-                    && !preferenceHelper.shouldLogToGeoJSON()) {
-                mnuAnnotate.setIcon(R.drawable.annotate2_disabled);
-                mnuAnnotate.setEnabled(false);
-            }
-            else {
-                if (session.isAnnotationMarked()) {
-                    mnuAnnotate.setIcon(R.drawable.annotate2_active);
-                }
-                else {
-                    mnuAnnotate.setIcon(R.drawable.annotate2);
-                }
-            }
-
-        }
+        // 底部栏已改为双按钮，无需菜单项启停逻辑
     }
 
     @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        LOG.debug("Menu Item: " + String.valueOf(item.getTitle()));
-
-        switch (id) {
-            case R.id.mnuAnnotate:
-                annotate();
-                return true;
-            case R.id.mnuOnePoint:
-                logSinglePoint();
-                return true;
-            case R.id.mnuShare:
-                share();
-                return true;
-            case R.id.mnuExportConfig:
-                exportConfig();
-                return true;
-            case R.id.mnuImportConfig:
-                importConfig();
-                return true;
-            case R.id.mnuOSM:
-                uploadToOpenStreetMap();
-                return true;
-            case R.id.mnuDropBox:
-                uploadToDropBox();
-                return true;
-            case R.id.mnuGoogleDrive:
-                uploadToGoogleDrive();
-                return true;
-            case R.id.mnuOpenGTS:
-                sendToOpenGTS();
-                return true;
-            case R.id.mnuFtp:
-                sendToFtp();
-                return true;
-            case R.id.mnuEmail:
-                selectAndEmailFile();
-                return true;
-            case R.id.mnuAutoSendNow:
-                forceAutoSendNow();
-                return true;
-            case R.id.mnuOwnCloud:
-                uploadToOwnCloud();
-                return true;
-            case R.id.mnuSFTP:
-                uploadToSFTP();
-                return true;
-            case R.id.mnuCustomUrl:
-                uploadToCustomURL();
-                return true;
-            case R.id.mnuHttpFileUpload:
-                uploadToHttpFileUpload();
-                return true;
-            default:
-                return true;
-        }
-    }
 
 
     private void forceAutoSendNow() {

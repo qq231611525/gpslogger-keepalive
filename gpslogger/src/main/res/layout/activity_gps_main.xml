@@ -56,15 +56,46 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
         </FrameLayout>
-        <androidx.appcompat.widget.Toolbar
+        <LinearLayout
             android:id="@+id/toolbarBottom"
             android:layout_gravity="bottom"
             android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
             android:visibility="visible"
             android:background="@color/primaryColor"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            />
+            >
+            <TextView
+                android:id="@+id/btnExportConfig"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:text="@string/menu_export_short"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                />
+            <TextView
+                android:id="@+id/btnImportConfig"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:text="@string/menu_import_short"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                />
+        </LinearLayout>
     </FrameLayout>
 
 
