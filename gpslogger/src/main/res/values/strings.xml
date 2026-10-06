@@ -22,7 +22,7 @@
     <string name="menu_import_config">导入配置</string>
     <string name="menu_keepalive_notify">保活通知设置</string>
     <string name="keepalive_notify_title">保活重启通知</string>
-    <string name="keepalive_notify_hint">重启后自动 GET 请求的 URL，留空则不推送，例如:\nhttp://www.pushplus.plus/send?token=xxx&title=标题&content=内容</string>
+    <string name="keepalive_notify_hint">重启后自动 GET 请求的 URL，留空则不推送，例如:\nhttp://www.pushplus.plus/send?token=xxx&amp;title=标题&amp;content=内容</string>
     <string name="keepalive_notify_saved">已保存</string>
     <string name="keepalive_notify_test">测试推送</string>
     <string name="keepalive_notify_test_ok">推送成功</string>
