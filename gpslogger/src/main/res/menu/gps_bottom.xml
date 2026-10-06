@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/mnuExportConfig" android:title="@string/menu_export_config" app:showAsAction="always" />
+    <item android:id="@+id/mnuImportConfig" android:title="@string/menu_import_config" app:showAsAction="always" />
+    <item android:id="@+id/mnuKeepAliveNotify" android:title="@string/menu_keepalive_notify" app:showAsAction="always" />
+
+</menu>

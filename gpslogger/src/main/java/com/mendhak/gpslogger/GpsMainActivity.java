@@ -1146,7 +1146,7 @@ public class GpsMainActivity extends AppCompatActivity
 
         if(toolbarBottom.getMenu().size() > 0){ return true;}
 
-        toolbarBottom.inflateMenu(R.menu.gps_main);
+        toolbarBottom.inflateMenu(R.menu.gps_bottom);
         setupEvenlyDistributedToolbar();
         toolbarBottom.setOnMenuItemClickListener(this);
 
