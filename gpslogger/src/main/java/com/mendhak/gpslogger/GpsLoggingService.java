@@ -95,6 +95,21 @@ public class GpsLoggingService extends Service  {
 
     @Override
     public void onCreate() {
+        // 保活：检测进程被杀后重建。onCreate 每个进程只调一次，
+        // 如果标记位还在，说明上次不是干净停止，而是被系统杀了
+        try {
+            android.content.SharedPreferences sp = getSharedPreferences("keepalive_stats", MODE_PRIVATE);
+            boolean wasRunning = sp.getBoolean("service_was_running", false);
+            if (wasRunning) {
+                int count = RestartCounter.incrementAndGet(this);
+                LOG.warn("GpsLoggingService process recreated after kill (restart #" + count + ")");
+                KeepAliveNotifier.notifyRestartAsync(this, count);
+            }
+            sp.edit().putBoolean("service_was_running", true).apply();
+        } catch (Exception e) {
+            LOG.error("Restart detection failed", e);
+        }
+
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 startForeground(NotificationChannelNames.GPSLOGGER_DEFAULT_NOTIFICATION_ID, getNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION);
@@ -132,14 +147,6 @@ public class GpsLoggingService extends Service  {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-
-        // 保活：系统杀死后用 START_STICKY 重启时 intent 为 null，这是可靠的重启信号
-        if (intent == null) {
-            int count = RestartCounter.incrementAndGet(this);
-            LOG.warn("GpsLoggingService restarted by system after kill (restart #" + count + ")");
-            KeepAliveNotifier.notifyRestartAsync(this, count);
-        }
-
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 startForeground(NotificationChannelNames.GPSLOGGER_DEFAULT_NOTIFICATION_ID, getNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION);
@@ -168,6 +175,16 @@ public class GpsLoggingService extends Service  {
         LOG.warn(SessionLogcatAppender.MARKER_INTERNAL, "GpsLoggingService is being destroyed by Android OS.");
         unregisterEventBus();
         removeNotification();
+
+        // 保活：干净停止（用户主动停）时清标记；意外被杀时保留标记，下次 onCreate 能检测到
+        try {
+            boolean cleanStop = !session.isStarted();
+            getSharedPreferences("keepalive_stats", MODE_PRIVATE)
+                    .edit().putBoolean("service_was_running", !cleanStop).apply();
+        } catch (Exception e) {
+            LOG.error("Failed to update running marker", e);
+        }
+
         super.onDestroy();
 
         if(session.isStarted()){
