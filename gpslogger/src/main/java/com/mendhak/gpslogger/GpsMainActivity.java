@@ -27,6 +27,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -120,6 +121,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 
 import de.greenrobot.event.EventBus;
 import eltos.simpledialogfragment.SimpleDialog;
@@ -1240,6 +1245,12 @@ public class GpsMainActivity extends AppCompatActivity
             case R.id.mnuShare:
                 share();
                 return true;
+            case R.id.mnuExportConfig:
+                exportConfig();
+                return true;
+            case R.id.mnuImportConfig:
+                importConfig();
+                return true;
             case R.id.mnuOSM:
                 uploadToOpenStreetMap();
                 return true;
@@ -1509,6 +1520,66 @@ public class GpsMainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * 导出配置：把所有 SharedPreferences 写成 gpslogger.properties
+     */
+    private void exportConfig() {
+        try {
+            SharedPreferences prefs = preferenceHelper.getSharedPreferences();
+            Properties props = new Properties();
+            for (Map.Entry<String, ?> entry : prefs.getAll().entrySet()) {
+                props.setProperty(entry.getKey(), String.valueOf(entry.getValue()));
+            }
+            File outFile = new File(Files.storageFolder(getApplicationContext()), "gpslogger.properties");
+            FileOutputStream fos = new FileOutputStream(outFile);
+            props.store(fos, "GPSLogger config export");
+            fos.close();
+            Dialogs.alert(getString(R.string.success),
+                    getString(R.string.config_exported, outFile.getAbsolutePath()), this);
+        } catch (Exception e) {
+            LOG.error("Export config failed", e);
+            Dialogs.alert(getString(R.string.sorry),
+                    getString(R.string.config_export_failed, e.getMessage()), this);
+        }
+    }
+
+    /**
+     * 导入配置：用系统文件选择器选 .properties 文件
+     */
+    private void importConfig() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        configImportLauncher.launch(intent);
+    }
+
+    private final ActivityResultLauncher<Intent> configImportLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                            Uri uri = result.getData().getData();
+                            try {
+                                InputStream is = getContentResolver().openInputStream(uri);
+                                File tmpFile = new File(getCacheDir(), "gpslogger_import.properties");
+                                FileOutputStream fos = new FileOutputStream(tmpFile);
+                                byte[] buf = new byte[8192];
+                                int len;
+                                while ((len = is.read(buf)) > 0) {
+                                    fos.write(buf, 0, len);
+                                }
+                                fos.close();
+                                is.close();
+                                preferenceHelper.setPreferenceFromPropertiesFile(tmpFile);
+                                tmpFile.delete();
+                                Dialogs.alert(getString(R.string.success),
+                                        getString(R.string.config_imported), this);
+                            } catch (Exception e) {
+                                LOG.error("Import config failed", e);
+                                Dialogs.alert(getString(R.string.sorry),
+                                        getString(R.string.config_import_failed, e.getMessage()), this);
+                            }
+                        }
+                    });
 
     /**
      * Provides a connection to the GPS Logging Service

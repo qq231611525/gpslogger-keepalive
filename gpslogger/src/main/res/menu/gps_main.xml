@@ -26,4 +26,7 @@
 
     <item android:id="@+id/mnuShare" android:title="@string/menu_share" android:icon="@drawable/share" app:showAsAction="always"  />
 
+    <item android:id="@+id/mnuExportConfig" android:title="@string/menu_export_config" />
+    <item android:id="@+id/mnuImportConfig" android:title="@string/menu_import_config" />
+
 </menu>

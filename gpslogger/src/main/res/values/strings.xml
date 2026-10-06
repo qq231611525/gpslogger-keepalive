@@ -18,6 +18,12 @@
 
     <string name="menu_annotate">Annotate</string>
     <string name="menu_share">Share</string>
+    <string name="menu_export_config">导出配置</string>
+    <string name="menu_import_config">导入配置</string>
+    <string name="config_exported">配置已导出到: %1$s</string>
+    <string name="config_export_failed">导出失败: %1$s</string>
+    <string name="config_imported">配置已导入，重启应用生效</string>
+    <string name="config_import_failed">导入失败: %1$s</string>
     <string name="menu_exit">Exit</string>
 
 
