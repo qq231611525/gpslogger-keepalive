@@ -1143,29 +1143,26 @@ public class GpsMainActivity extends AppCompatActivity
         // Create the Toolbar Params based on the screenWidth
         Toolbar.LayoutParams toolbarParams = new Toolbar.LayoutParams(screenWidth, Toolbar.LayoutParams.WRAP_CONTENT);
 
-        // Loop through the child Items
-        for(int i = 0; i < childCount; i++){
-            // Get the item at the current index
-            View childView = toolbar.getChildAt(i);
-            // If its a ViewGroup
-            if(childView instanceof ViewGroup){
-                // Set its layout params
-                childView.setLayoutParams(toolbarParams);
-                // Get the child count of this view group, and compute the item widths based on this count & screen size
-                int innerChildCount = ((ViewGroup) childView).getChildCount();
-                int itemWidth  = (screenWidth / innerChildCount);
-                // Create layout params for the ActionMenuView
-                ActionMenuView.LayoutParams params = new ActionMenuView.LayoutParams(itemWidth, Toolbar.LayoutParams.WRAP_CONTENT);
-                // Loop through the children
-                for(int j = 0; j < innerChildCount; j++){
-                    View grandChild = ((ViewGroup) childView).getChildAt(j);
-                    if(grandChild instanceof ActionMenuItemView){
-                        // set the layout parameters on each View
-                        grandChild.setLayoutParams(params);
+        // 延迟到布局完成后再排，保证菜单项已就位
+        toolbar.post(() -> {
+            int childCount2 = toolbar.getChildCount();
+            for (int i = 0; i < childCount2; i++) {
+                View childView = toolbar.getChildAt(i);
+                if (childView instanceof ViewGroup) {
+                    childView.setLayoutParams(toolbarParams);
+                    int innerChildCount = ((ViewGroup) childView).getChildCount();
+                    int itemWidth = (screenWidth / innerChildCount);
+                    ActionMenuView.LayoutParams params = new ActionMenuView.LayoutParams(itemWidth, Toolbar.LayoutParams.WRAP_CONTENT);
+                    for (int j = 0; j < innerChildCount; j++) {
+                        View grandChild = ((ViewGroup) childView).getChildAt(j);
+                        if (grandChild instanceof ActionMenuItemView) {
+                            grandChild.setLayoutParams(params);
+                        }
                     }
                 }
             }
-        }
+            toolbar.requestLayout();
+        });
     }
 
     private void enableDisableMenuItems() {
