@@ -406,7 +406,8 @@ public class GpsDetailedViewFragment extends GenericViewFragment {
 
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
         DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity().getApplicationContext());
-        txtTime.setText(MessageFormat.format("{0} ({1} {2} {3})", duration, getString(R.string.started_at), dateFormat.format(d), timeFormat.format(d)));
+        // 时长和开始时间分两行显示
+        txtTime.setText(duration + "\n(" + getString(R.string.started_at) + " " + dateFormat.format(d) + " " + timeFormat.format(d) + ")");
     }
 
 

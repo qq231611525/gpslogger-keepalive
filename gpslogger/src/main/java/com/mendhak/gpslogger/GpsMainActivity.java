@@ -1036,7 +1036,12 @@ public class GpsMainActivity extends AppCompatActivity
     }
 
     private int getUserSelectedNavigationItem(){
-        return preferenceHelper.getUserSelectedNavigationItem();
+        int pos = preferenceHelper.getUserSelectedNavigationItem();
+        // 简洁视图已移除，做兼容映射：旧 0/1→0（详细），旧 2→1（日志）
+        if (pos >= 2) {
+            return 1;
+        }
+        return 0;
     }
 
     private void loadDefaultFragmentView() {
@@ -1047,15 +1052,17 @@ public class GpsMainActivity extends AppCompatActivity
     private void loadFragmentView(int position){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
+        // 简洁视图已移除：0=详细视图，1=日志视图（兼容旧的 1=详细、2=日志）
+        if (position > 1) {
+            position = 1;
+        }
+
         switch (position) {
             default:
             case 0:
-                transaction.replace(R.id.container, GpsSimpleViewFragment.newInstance());
-                break;
-            case 1:
                 transaction.replace(R.id.container, GpsDetailedViewFragment.newInstance());
                 break;
-            case 2:
+            case 1:
                 transaction.replace(R.id.container, GpsLogViewFragment.newInstance());
                 break;
 
