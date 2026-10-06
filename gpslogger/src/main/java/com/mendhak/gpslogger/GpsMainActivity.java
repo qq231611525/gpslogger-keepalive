@@ -1566,13 +1566,14 @@ public class GpsMainActivity extends AppCompatActivity
 
     /**
      * 导出配置：用系统文件选择器让用户选保存位置
+     * 使用 JSON 格式保留数据类型，避免导入时类型错乱闪退
      */
     private void exportConfig() {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
         String timeStamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(new java.util.Date());
-        intent.putExtra(Intent.EXTRA_TITLE, "gpslogger_" + timeStamp + ".properties");
+        intent.putExtra(Intent.EXTRA_TITLE, "gpslogger_" + timeStamp + ".json");
         configExportLauncher.launch(intent);
     }
 
@@ -1583,12 +1584,38 @@ public class GpsMainActivity extends AppCompatActivity
                             Uri uri = result.getData().getData();
                             try {
                                 SharedPreferences prefs = preferenceHelper.getSharedPreferences();
-                                Properties props = new Properties();
+                                org.json.JSONObject root = new org.json.JSONObject();
                                 for (Map.Entry<String, ?> entry : prefs.getAll().entrySet()) {
-                                    props.setProperty(entry.getKey(), String.valueOf(entry.getValue()));
+                                    String key = entry.getKey();
+                                    Object val = entry.getValue();
+                                    org.json.JSONObject item = new org.json.JSONObject();
+                                    if (val instanceof Boolean) {
+                                        item.put("t", "b");
+                                        item.put("v", (Boolean) val);
+                                    } else if (val instanceof Integer) {
+                                        item.put("t", "i");
+                                        item.put("v", (Integer) val);
+                                    } else if (val instanceof Long) {
+                                        item.put("t", "l");
+                                        item.put("v", (Long) val);
+                                    } else if (val instanceof Float) {
+                                        item.put("t", "f");
+                                        item.put("v", (Float) val);
+                                    } else if (val instanceof java.util.Set) {
+                                        item.put("t", "s");
+                                        org.json.JSONArray arr = new org.json.JSONArray();
+                                        for (Object o : (java.util.Set<?>) val) {
+                                            arr.put(String.valueOf(o));
+                                        }
+                                        item.put("v", arr);
+                                    } else {
+                                        item.put("t", "str");
+                                        item.put("v", String.valueOf(val));
+                                    }
+                                    root.put(key, item);
                                 }
                                 OutputStream os = getContentResolver().openOutputStream(uri);
-                                props.store(os, "GPSLogger config export");
+                                os.write(root.toString(2).getBytes("UTF-8"));
                                 os.close();
                                 Dialogs.alert(getString(R.string.success),
                                         getString(R.string.config_exported, uri.getLastPathSegment()), this);
@@ -1617,17 +1644,65 @@ public class GpsMainActivity extends AppCompatActivity
                             Uri uri = result.getData().getData();
                             try {
                                 InputStream is = getContentResolver().openInputStream(uri);
-                                File tmpFile = new File(getCacheDir(), "gpslogger_import.properties");
-                                FileOutputStream fos = new FileOutputStream(tmpFile);
+                                java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
                                 byte[] buf = new byte[8192];
                                 int len;
                                 while ((len = is.read(buf)) > 0) {
-                                    fos.write(buf, 0, len);
+                                    baos.write(buf, 0, len);
                                 }
-                                fos.close();
                                 is.close();
-                                preferenceHelper.setPreferenceFromPropertiesFile(tmpFile);
-                                tmpFile.delete();
+                                String content = baos.toString("UTF-8");
+
+                                SharedPreferences prefs = preferenceHelper.getSharedPreferences();
+                                SharedPreferences.Editor editor = prefs.edit();
+
+                                if (content.trim().startsWith("{")) {
+                                    // JSON 格式（新版导出）：按类型恢复
+                                    org.json.JSONObject root = new org.json.JSONObject(content);
+                                    java.util.Iterator<String> keys = root.keys();
+                                    while (keys.hasNext()) {
+                                        String key = keys.next();
+                                        org.json.JSONObject item = root.getJSONObject(key);
+                                        String t = item.getString("t");
+                                        switch (t) {
+                                            case "b":
+                                                editor.putBoolean(key, item.getBoolean("v"));
+                                                break;
+                                            case "i":
+                                                editor.putInt(key, item.getInt("v"));
+                                                break;
+                                            case "l":
+                                                editor.putLong(key, item.getLong("v"));
+                                                break;
+                                            case "f":
+                                                editor.putFloat(key, (float) item.getDouble("v"));
+                                                break;
+                                            case "s":
+                                                org.json.JSONArray arr = item.getJSONArray("v");
+                                                java.util.Set<String> set = new java.util.HashSet<>();
+                                                for (int i = 0; i < arr.length(); i++) {
+                                                    set.add(arr.getString(i));
+                                                }
+                                                editor.putStringSet(key, set);
+                                                break;
+                                            default:
+                                                editor.putString(key, item.getString("v"));
+                                                break;
+                                        }
+                                    }
+                                } else {
+                                    // 旧版 properties 格式：兼容处理
+                                    File tmpFile = new File(getCacheDir(), "gpslogger_import.properties");
+                                    FileOutputStream fos = new FileOutputStream(tmpFile);
+                                    fos.write(content.getBytes("UTF-8"));
+                                    fos.close();
+                                    preferenceHelper.setPreferenceFromPropertiesFile(tmpFile);
+                                    tmpFile.delete();
+                                    Dialogs.alert(getString(R.string.success),
+                                            getString(R.string.config_imported), this);
+                                    return;
+                                }
+                                editor.apply();
                                 Dialogs.alert(getString(R.string.success),
                                         getString(R.string.config_imported), this);
                             } catch (Exception e) {

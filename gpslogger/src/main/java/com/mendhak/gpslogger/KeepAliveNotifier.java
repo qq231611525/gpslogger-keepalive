@@ -115,7 +115,7 @@ public class KeepAliveNotifier {
 
     /**
      * 同步发送一次，用于测试按钮（调用方需在后台线程调用）
-     * @return 成功返回 null，失败返回错误信息
+     * @return 成功返回 null，失败返回错误信息（包含服务端返回的内容）
      */
     public static String notifyTestSync(String url) {
         HttpURLConnection conn = null;
@@ -127,17 +127,47 @@ public class KeepAliveNotifier {
             conn.setConnectTimeout(15000);
             conn.setReadTimeout(15000);
             int code = conn.getResponseCode();
-            try (InputStream is = conn.getInputStream()) {
-                byte[] buf = new byte[1024];
-                while (is.read(buf) != -1) { /* drain */ }
+            // 读取响应体，判断业务是否成功（pushplus 等即使 token 错也返回 HTTP 200）
+            StringBuilder body = new StringBuilder();
+            try (InputStream is = (code >= 200 && code < 300) ? conn.getInputStream() : conn.getErrorStream()) {
+                if (is != null) {
+                    byte[] buf = new byte[4096];
+                    int n;
+                    while ((n = is.read(buf)) != -1) {
+                        body.append(new String(buf, 0, n, "UTF-8"));
+                    }
+                }
             } catch (Exception ignored) { }
-            return code >= 200 && code < 300 ? null : "HTTP " + code;
+            String bodyStr = body.toString();
+            Log.i(TAG, "Test notify response: HTTP " + code + " body: " + bodyStr);
+            if (code < 200 || code >= 300) {
+                return "HTTP " + code + ": " + truncate(bodyStr, 200);
+            }
+            // 尝试解析常见推送服务的 JSON 返回
+            try {
+                org.json.JSONObject json = new org.json.JSONObject(bodyStr);
+                if (json.has("code")) {
+                    int bizCode = json.optInt("code", -1);
+                    String msg = json.optString("msg", json.optString("message", ""));
+                    if (bizCode != 200 && bizCode != 0) {
+                        return "服务端返回 code=" + bizCode + ": " + msg;
+                    }
+                }
+            } catch (Exception ignored) {
+                // 不是 JSON，HTTP 200 即算成功
+            }
+            return null;
         } catch (Exception e) {
-            return e.getMessage();
+            return e.getClass().getSimpleName() + ": " + e.getMessage();
         } finally {
             if (conn != null) {
                 conn.disconnect();
             }
         }
+    }
+
+    private static String truncate(String s, int max) {
+        if (s == null) return "";
+        return s.length() > max ? s.substring(0, max) + "..." : s;
     }
 }
