@@ -60,7 +60,10 @@ public class AppSettings extends Application {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-            NotificationChannel channel = new NotificationChannel(NotificationChannelNames.GPSLOGGER_DEFAULT, getString(R.string.app_name_release), NotificationManager.IMPORTANCE_DEFAULT);
+            // 删除旧渠道，用低重要性重建：状态栏保留图标，下拉栏静默收起
+            manager.deleteNotificationChannel(NotificationChannelNames.GPSLOGGER_DEFAULT);
+
+            NotificationChannel channel = new NotificationChannel(NotificationChannelNames.GPSLOGGER_DEFAULT, getString(R.string.app_name_release), NotificationManager.IMPORTANCE_LOW);
             channel.enableLights(false);
             channel.enableVibration(false);
             channel.setSound(null,null);
