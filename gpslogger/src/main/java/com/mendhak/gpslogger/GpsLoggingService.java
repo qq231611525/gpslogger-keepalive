@@ -616,7 +616,7 @@ public class GpsLoggingService extends Service  {
 
         // 通知栏只显示时长和重启次数
         String duration = Strings.getDescriptiveDurationString((int) (System.currentTimeMillis() - session.getStartTimeStamp()) / 1000, this);
-        contentTitle = getString(R.string.txt_travel_duration) + ": " + duration;
+        contentTitle = getString(R.string.txt_travel_duration) + " " + duration;
         contentText = "保活重启" + restartCount + "次";
         if (session.hasValidLocation()) {
             notificationTime = session.getCurrentLocationInfo().getTime();

@@ -45,8 +45,8 @@ android {
 
         targetSdkVersion 35
         compileSdk 35
-        versionCode 144
-        versionName "144-keepalive"
+        versionCode 145
+        versionName "145-keepalive"
 
         // Used by AppAuth-Android
         manifestPlaceholders = [
