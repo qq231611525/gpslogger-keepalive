@@ -132,6 +132,14 @@ public class GpsLoggingService extends Service  {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
+
+        // 保活：系统杀死后用 START_STICKY 重启时 intent 为 null，这是可靠的重启信号
+        if (intent == null) {
+            int count = RestartCounter.incrementAndGet(this);
+            LOG.warn("GpsLoggingService restarted by system after kill (restart #" + count + ")");
+            KeepAliveNotifier.notifyRestartAsync(this, count);
+        }
+
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 startForeground(NotificationChannelNames.GPSLOGGER_DEFAULT_NOTIFICATION_ID, getNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION);
