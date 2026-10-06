@@ -611,6 +611,9 @@ public class GpsLoggingService extends Service  {
         CharSequence contentText = getString(R.string.app_name_release);
         long notificationTime = System.currentTimeMillis();
 
+        // 保活重启计数显示
+        int restartCount = RestartCounter.getCount(this);
+
         if (session.hasValidLocation()) {
             contentTitle = Strings.getFormattedLatitude(session.getCurrentLatitude()) + ", "
                     + Strings.getFormattedLongitude(session.getCurrentLongitude());
@@ -622,6 +625,11 @@ public class GpsLoggingService extends Service  {
                     + "<b>" + getString(R.string.txt_accuracy) + "</b> "  + Strings.getDistanceDisplay(this, session.getCurrentLocationInfo().getAccuracy(), preferenceHelper.shouldDisplayImperialUnits(), true));
 
             notificationTime = session.getCurrentLocationInfo().getTime();
+        }
+
+        // 通知副标题追加保活重启次数
+        if (restartCount > 0) {
+            contentText = contentText + " · 保活重启" + restartCount + "次";
         }
 
         if (nfc == null) {

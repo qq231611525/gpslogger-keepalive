@@ -38,7 +38,8 @@ public class GuardService extends Service {
             @Override
             public void run() {
                 if (!isServiceRunning(GpsLoggingService.class)) {
-                    LOG.warn("GpsLoggingService not running, restarting from guard process");
+                    int count = RestartCounter.incrementAndGet(GuardService.this);
+                    LOG.warn("GpsLoggingService not running, restarting from guard process (restart #" + count + ")");
                     Intent serviceIntent = new Intent(GuardService.this, GpsLoggingService.class);
                     serviceIntent.putExtra(IntentConstants.IMMEDIATE_START, true);
                     try {
