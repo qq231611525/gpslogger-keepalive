@@ -1,0 +1,8 @@
+* Použ. adresa URL sa dá použiť ako automatický odosielač, čo zvyšuje spoľahlivosť.
+* Možnosť zápisu času s posunom pre časovú zónu - v podrobnostiach zaznamenávania. (GPX, KML, GeoJSON, CSV)
+* V použ. adrese URL možno použiť parameter %TIMEOFFSET
+* Záznam do CSV: boli pridané viaceré polia.
+* Záznam do CSV: možnosť určenia oddeľovača poľa a desatín pomocou čiarky.
+* Zobrazenie záznamu zobrazí súradnice v preferovanom formáte.
+* Pri obnove po neočakávanom zastavení sa spustí záznam, ak bol spustený aj predtým.
+* Oprava chyby v maďarčine

@@ -1,0 +1,302 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.7.1'
+
+        classpath 'org.jacoco:org.jacoco.core:0.8.15'
+        classpath "com.moowork.gradle:gradle-node-plugin:0.13"
+    }
+}
+
+//Android
+apply plugin: 'com.android.application'
+
+////Generating PGP
+//apply plugin: 'signing'
+//Generating colorful output
+apply from: 'buildtools/ColoredOutput.gradle'
+project.ext.set("GHACTIONS_FOLDING", true)
+//Generate help pages
+apply plugin: 'com.moowork.node'
+
+repositories {
+    mavenCentral()
+
+    maven {
+        url "https://jitpack.io"
+    }
+    google()
+
+
+}
+
+android {
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.mendhak.gpslogger"
+        minSdkVersion 21
+
+        targetSdkVersion 35
+        compileSdk 35
+        versionCode 137
+        versionName "137"
+
+        // Used by AppAuth-Android
+        manifestPlaceholders = [
+                appAuthRedirectScheme: 'com.mendhak.gpslogger'
+        ]
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.txt'
+            debuggable true
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-DEBUG"
+            resValue "string", "app_name", "@string/app_name_debug"
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.txt'
+            debuggable false
+            resValue "string", "app_name", "@string/app_name_release"
+        }
+    }
+
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+    lint {
+        abortOnError false
+    }
+    namespace 'com.mendhak.gpslogger'
+
+
+    //Release signing key
+    if (project.hasProperty("RELEASE_STORE_FILE")) {
+        signingConfigs {
+            release {
+                storeFile file(RELEASE_STORE_FILE)
+                storePassword RELEASE_STORE_PASSWORD
+                keyAlias RELEASE_KEY_ALIAS
+                keyPassword RELEASE_KEY_PASSWORD
+            }
+        }
+
+        buildTypes {
+            release {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+    else if (System.getenv("SIGNING_STORE_PASSWORD") != null) {
+        signingConfigs {
+            release {
+                storeFile = file("${projectDir}/keystore/your_signing_keystore.jks")
+                storePassword System.getenv("SIGNING_STORE_PASSWORD")
+                keyAlias System.getenv("SIGNING_KEY_ALIAS")
+                keyPassword System.getenv("SIGNING_KEY_PASSWORD")
+            }
+        }
+
+        buildTypes {
+            release {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+
+}
+
+
+
+dependencies {
+
+//    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "androidx.activity:activity:1.9.2"
+    implementation "androidx.fragment:fragment:1.8.3"
+    implementation "androidx.preference:preference:1.2.1"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+
+
+    //Google Drive Oauth
+    implementation 'net.openid:appauth:0.9.1'
+
+
+    //FTP operations
+    implementation('commons-net:commons-net:3.13.0')
+
+
+    //Debug Logging
+    implementation 'org.slf4j:slf4j-api:2.0.7'
+    implementation 'com.github.tony19:logback-android:3.0.0'
+
+
+    //Android lollipop/material features including the Toolbar
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+
+
+    //Cardviews
+    implementation 'androidx.cardview:cardview:1.0.0'
+
+    // Simple Dialog Fragments, replacing Material Dialogs.
+//    implementation 'io.github.eltos:simpledialogfragments:3.4'
+    implementation 'com.github.eltos:SimpleDialogFragments:v3.5'
+
+    //The material drawer
+    implementation('com.mikepenz:materialdrawer:4.6.4@aar') {
+        transitive = true
+    }
+
+    //Progress button
+    implementation 'com.github.dmytrodanylyk.android-process-button:library:1.0.4'
+
+    //Android's WorkManager
+    implementation 'androidx.work:work-runtime:2.10.1'
+    // We need to use Gson to help with WorkManager limitations
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    //Event bus
+    implementation 'de.greenrobot:eventbus:2.4.0'
+
+    //JARs which aren't on maven
+    //compile 'com.mendhak.gpsloggersupportfiles:owncloud-android-library:0.0.3@aar'
+    implementation 'com.github.owncloud:android-library:oc-android-library-0.9.14'
+
+    //Required by owncloud library
+    // VULNERABLE DEPENDENCY
+    // CVE-2012-5783  4.8  Improper Certificate Validation
+    // CVE-2012-6153  3.7  Input Validation
+    // CVE-2016-6801  8.8  Cross-Site Request Forgery (CSRF)
+    implementation ('commons-httpclient:commons-httpclient:3.1') {
+                exclude module: 'commons-logging'
+    }
+    implementation 'org.apache.jackrabbit:jackrabbit-webdav:2.12.2'
+
+    //Expandable textview in the FAQ
+    implementation 'com.ms-square:expandableTextView:0.1.4'
+
+    //The single letter text icons
+    implementation 'com.github.amulyakhare:TextDrawable:558677ea31'
+
+
+    //OKHTTP client
+    // VULNERABLE DEPENDENCY
+    // CVE-2023-0833  4.7  Generation of Error Message Containing Sensitive Information
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+
+    //Dropbox API 3
+    implementation 'com.dropbox.core:dropbox-core-sdk:7.0.0'
+    implementation 'com.dropbox.core:dropbox-android-sdk:7.0.0'
+
+    //Markdown to HTML library
+    implementation 'com.github.commonsguy:cwac-anddown:dedb48ec0f'
+
+    // A fork of JSCH used in SFTPJob.  It specifically requires bouncycastle to use modern algorithms.
+    implementation 'com.github.mwiede:jsch:2.28.3'
+    implementation 'org.bouncycastle:bcpkix-jdk15to18:1.84'
+    implementation 'org.bouncycastle:bcprov-jdk15to18:1.84'
+
+
+    //File Picker, but a patched version
+    //https://github.com/codekidX/storage-chooser/issues/127
+    //https://github.com/codekidX/storage-chooser/issues/134
+    implementation 'com.github.mendhak:storage-chooser:2.0.4.4b'
+
+    //CSV library
+    implementation('org.apache.commons:commons-csv:1.9.0')
+
+     //Libraries required for unit testing
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:3.10.0'
+    testImplementation 'org.json:json:20260522'
+    testImplementation 'androidx.test:runner:1.6.2'
+    testImplementation 'androidx.test:rules:1.6.1'
+}
+
+
+
+tasks.withType(Test) {
+    //Tell Gradle to always run the tests even if build is up to date
+    outputs.upToDateWhen { false }
+
+    //Tell Gradle to show test output in the console
+    testLogging {
+        events  "failed"
+        exceptionFormat = 'full'
+        showStandardStreams true
+    }
+}
+
+tasks.configureEach { task ->
+    //Don't run lint. Takes too long.
+    if (task.name.contains("lint")) {
+        task.enabled = false
+    }
+}
+
+task buildTranslationArray {
+
+
+        def foundLocales = new StringBuilder()
+        foundLocales.append("new String[]{")
+
+        fileTree("src/main/res").visit { FileVisitDetails details ->
+            if(details.file.path.endsWith("strings.xml")){
+                def languageCode = details.file.parent.tokenize(File.separator).last().replaceAll('values-','').replaceAll('-r','-')
+                languageCode = (languageCode == "values") ? "en" : languageCode;
+                foundLocales.append("\"").append(languageCode).append("\"").append(",")
+            }
+        }
+
+        foundLocales.append("}")
+        //Don't forget to remove the trailing comma
+        def foundLocalesString = foundLocales.toString().replaceAll(',}','}')
+        android.defaultConfig.buildConfigField "String[]", "TRANSLATION_ARRAY", foundLocalesString
+
+
+
+}
+preBuild.dependsOn buildTranslationArray
+
+tasks.configureEach { task ->
+    if (task.name == 'preDebugBuild' || task.name == 'preReleaseBuild') {
+        task.dependsOn buildTranslationArray
+    }
+}
+
+
+task copyFinalAPK(group:'build') {
+    //Copies final APK to this directory
+    def finalApkName = "gpslogger-"+android.defaultConfig.versionName+".apk"
+
+    copy{
+        from "build/outputs/apk/release/gpslogger-release.apk"
+        into "./"
+
+        // Use a closure to map the file name
+        rename { String fileName ->
+            fileName.replace("gpslogger-release.apk", finalApkName)
+        }
+    }
+
+}
+
+
+task deleteReleaseAPKs(group:"build", type:Delete){
+    delete fileTree(dir:'./', include:'*.apk*')
+}
+
+clean.dependsOn deleteReleaseAPKs

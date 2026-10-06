@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+    android:installLocation="auto">
+
+    <!-- Satellite and network location services -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <!-- Writing log files to storage -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <!-- If the user wants the app to start on boot -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- If the user needs to send to external services like Custom URL, Dropbox, OSM -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- To check if an internet connection exists before communicating  -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- If the user needs to use external GPS receiver eg over bluetooth -->
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"
+                     tools:ignore="MockLocation"/>
+
+    <!-- To let the user disable battery optimization from within the app -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission-sdk-23 android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <!-- allow this to run as a foreground service -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- Beginning with Android 14 (API level 34), this is necessary. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <!-- 保活：申请忽略电池优化 -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/gpsloggericon3"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme"
+        android:name="com.mendhak.gpslogger.common.AppSettings"
+        android:usesCleartextTraffic="true"
+        android:enableOnBackInvokedCallback="true"
+        android:requestLegacyExternalStorage="true"
+        >
+
+
+        <service android:name=".GpsLoggingService"  android:exported="true" android:stopWithTask="false" android:foregroundServiceType="location">
+            <intent-filter>
+                <action android:name="com.mendhak.gpslogger.GpsLoggingService" />
+            </intent-filter>
+        </service>
+
+        <!-- 保活：守护进程服务，独立进程，定时检查并拉起主服务 -->
+        <service android:name=".GuardService"
+            android:exported="false"
+            android:stopWithTask="false"
+            android:process=":guard" />
+
+        <!-- 保活：JobScheduler 兜底，系统级定时巡检 -->
+        <service android:name=".KeepAliveJobService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+
+
+        <activity
+            android:name=".GpsMainActivity"
+            android:configChanges="locale"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:windowSoftInputMode="adjustNothing"
+            android:clearTaskOnLaunch="true"
+            android:exported="true"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.mendhak.gpslogger.HANDLE_AUTHORIZATION_RESPONSE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
+
+        <activity android:name="net.openid.appauth.RedirectUriReceiverActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data android:scheme="com.mendhak.gpslogger"
+                    android:path="/oauth2googledrive"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:host="oauth2openstreetmap" android:scheme="com.mendhak.gpslogger" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".MainPreferenceActivity"
+            android:label="@string/settings_screen_name"
+            android:parentActivityName=".GpsMainActivity"
+            android:exported="true"
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mendhak.gpslogger.GpsMainActivity" />
+
+        </activity>
+
+        <activity
+            android:name="com.dropbox.core.android.AuthActivity"
+            android:configChanges="orientation|keyboard"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:parentActivityName=".GpsMainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mendhak.gpslogger.GpsMainActivity" />
+
+            <intent-filter>
+                <!-- Set from build.gradle, see defaultConfig -->
+                <!--suppress AndroidDomInspection -->
+                <data android:scheme="db-0unjsn38gpe3rwv" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".shortcuts.ShortcutCreate"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Translucent" >
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".shortcuts.ShortcutStart"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Translucent" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".shortcuts.ShortcutStop"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Translucent" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".StartupReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".senders.AlarmReceiver" />
+
+        <receiver android:name=".MyPackageUpgradeReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".TaskerReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.mendhak.gpslogger.TASKER_COMMAND" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".RestarterReceiver" android:enabled="true" android:exported="false" />
+
+        <!--android:theme="@style/Theme.AppCompat.Translucent"-->
+        <activity
+            android:name=".NotificationAnnotationActivity"
+            android:exported="true"
+            android:label=""
+            android:theme="@style/Theme.AppCompat.Translucent"
+            android:excludeFromRecents="true"
+            >
+            <intent-filter>
+                <action android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.mendhak.gpslogger.NOTIFICATION_BUTTON" />
+            </intent-filter>
+        </activity>
+
+        <provider android:name=".common.ContentApi" android:authorities="${applicationId}" android:exported="true"
+                  tools:ignore="ExportedContentProvider" tools:replace="android:authorities"/>
+
+        <provider
+            android:name="com.mendhak.gpslogger.common.GpsLoggerFileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/fileprovider"/>
+        </provider>
+
+
+        <activity android:name=".ProfileLinkReceiverActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Translucent" >
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Handle hyperlinks with specific mime types -->
+                <data android:scheme="http"/>
+                <data android:scheme="https"/>
+                <data android:host="*" />
+                <data android:mimeType="application/x.gpslogger-properties" />
+                <data android:mimeType="application/x-gpslogger-properties" />
+                <data android:mimeType="text/x-java-properties" />
+            </intent-filter>
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Handle hyperlinks ending in .properties http://example.com/your.properties -->
+                <data android:scheme="http"/>
+                <data android:scheme="https"/>
+                <data android:host="*" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.properties" />
+            </intent-filter>
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Handle hyperlinks to gpslogger://properties/http://example.com/your.file -->
+                <data android:scheme="gpslogger" android:host="properties" />
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>

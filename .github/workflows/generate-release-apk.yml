@@ -1,0 +1,103 @@
+name: Build and Release App Bundle
+
+# Run on workflow dispatch or a tag
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    permissions: 
+      contents: write
+      id-token: write
+      attestations: write
+    runs-on: ubuntu-latest
+    steps:
+      - id: install-gpg-signing-key
+        name: Install GPG signing key
+        run: |
+          # Install gpg signing key
+          cat <(echo -e "${{ secrets.GPG_SIGNING_SECRET_KEY }}") | gpg --batch --import > /dev/null 2>&1
+          
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Decode Keystore
+        run: |
+          mkdir -p gpslogger/keystore
+          echo "${{ secrets.KEYSTORE }}" | base64 --decode > gpslogger/keystore/your_signing_keystore.jks
+        shell: bash
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      - name: Assemble APK
+        run: ./gradlew assembleRelease
+        env:
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+      - name: Copy and rename the APK
+        run: ./gradlew copyFinalAPK -Psigning.gnupg.passphrase=${{ secrets.GPG_SIGNING_PASSWORD }} -Psigning.gnupg.executable=gpg
+      - name: Get APK and WORKFLOW REF
+        id: references
+        run: |
+          APK_FILE_NAME=$(find gpslogger/ -maxdepth 1 -name "gpslogger-*.apk" -print -quit | xargs basename)
+          echo "APK_FILE_NAME=$APK_FILE_NAME" >> "$GITHUB_OUTPUT"
+          echo "GITHUB_WORKFLOW_REF=$GITHUB_WORKFLOW_REF" >> "$GITHUB_OUTPUT"
+      - name: GPG Sign the APK
+        run: |
+          gpg --pinentry-mode loopback --passphrase ${{ secrets.GPG_SIGNING_PASSWORD }}  --yes -ab --output  gpslogger/${{ steps.references.outputs.APK_FILE_NAME }}.asc gpslogger/${{ steps.references.outputs.APK_FILE_NAME }}
+      - name: Checksum the APK
+        run: |
+          cd gpslogger 
+          sha256sum ${{ steps.references.outputs.APK_FILE_NAME }} > ${{ steps.references.outputs.APK_FILE_NAME }}.SHA256
+      - name: Cosign Attestation of the APK
+        uses: actions/attest-build-provenance@v1
+        id: attest
+        with:
+          subject-path: gpslogger/gpslogger-*.apk
+      - name: List the files
+        run: |
+          tree gpslogger/build/outputs/   
+          ls -lah gpslogger/
+      - name: Get LOGINDEX
+        id: logindex
+        run: |
+          logIndex=$(jq -r '.verificationMaterial.tlogEntries[0].logIndex' < ${{ steps.attest.outputs.bundle-path }})
+          echo "REKOR_LOGINDEX=$logIndex" >> "$GITHUB_OUTPUT"
+      - name: Copy cosign bundle
+        run: cp ${{ steps.attest.outputs.bundle-path }} gpslogger/${{ steps.references.outputs.APK_FILE_NAME }}.cosign.bundle
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: Build Artifacts
+          path: |
+            gpslogger/gpslogger-*.apk
+            gpslogger/gpslogger-*.apk.asc
+            gpslogger/gpslogger-*.apk.SHA256
+            gpslogger/gpslogger-*.cosign.bundle
+      - name: Create a Release
+        id: create-release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          prerelease: ${{ contains(github.ref, '-rc') && startsWith(github.ref, 'refs/tags/') }}
+          make_latest: true
+          body: |
+            Verification: 
+            ```
+            cosign verify-blob ${{ steps.references.outputs.APK_FILE_NAME }} --bundle ${{ steps.references.outputs.APK_FILE_NAME }}.cosign.bundle --new-bundle-format --cert-oidc-issuer https://token.actions.githubusercontent.com --cert-identity https://github.com/${{ steps.references.outputs.GITHUB_WORKFLOW_REF }}
+            ```
+            
+            [Rekor transparency log](https://search.sigstore.dev?logIndex=${{ steps.logindex.outputs.REKOR_LOGINDEX }})
+          files: |
+            gpslogger/gpslogger-*.apk
+            gpslogger/gpslogger-*.apk.asc
+            gpslogger/gpslogger-*.apk.SHA256
+            gpslogger/gpslogger-*.cosign.bundle

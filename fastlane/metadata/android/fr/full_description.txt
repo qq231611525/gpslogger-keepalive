@@ -1,0 +1,47 @@
+Un enregistreur GPS léger et économe en batterie. Le but de cette application est d'enregistrer vos coordonnées GPS à des intervalles spécifiques dans un fichier sur votre carte SD.  Cette application fonctionne en arrière-plan, ce qui vous permet de faire une longue promenade, une randonnée, un vol ou une séance photo, ou même d'aller acheter du lait, et de la laisser fonctionner aussi longtemps que possible.   Une fois de retour à votre ordinateur, vous pouvez utiliser les fichiers pour géolocaliser des photos, les télécharger sur des sites de voyage, les visualiser dans Google Earth, etc.
+
+
+Pour plus d'informations, consultez le site <a href="https://gpslogger.app">https://gpslogger.app</a>
+
+<b>Remarque</b>: N'oubliez pas d'autoriser <b>tout le temps</b> pour cette application dans les paramètres de votre système d'exploitation, afin de lui permettre d'enregistrer les emplacements en arrière-plan.
+
+<b>Caractéristiques</b>
+
+<ul>
+<li>Peut enregistrer aux formats GPX, KML, CSV, NMEA et CSV. Peut également enregistrer vers une URL personnalisée ou juste l'écran.</li>
+<li>Enregistre les points GPX sous forme de traces et de segments de traces</li>
+<li>Enregistre également la vitesse, la direction et l'altitude si disponibles</li>
+<li>Ajoute une description à un point à l'aide du menu d'annotation, qui est ajouté comme point de cheminement</li>
+<li>Configure les intervalles de temps entre les points</li>
+<li>Configure un filtre de distance minimale entre les points ou un filtre de précision</li>
+<li>Icône de notification avec les coordonnées et les actions rapides</li>
+<li>Utilise les tours cellulaires pour la localisation lorsque le GPS est désactivé</li>
+<li>Choisit sélectivement le réseau, gps et fournisseurs de localisation passive</li>
+<li>Téléchargez automatiquement le fichier ou envoyez-le par e-mail à intervalles réguliers vers des destinations telles que Email, FTP, Dropbox, OpenStreetMap, Google Drive, URL personnalisée.</li>
+<li>Partagez l'emplacement ou les fichiers journaux par SMS/Email (et d'autres applications telles que Facebook ou Twitter, selon ce que vous avez installé)</li>
+<li>Démarrez la journalisation au démarrage du téléphone</li>
+<li>Lancez des opérations à partir de Tasker ou d'autres applications d'automatisation.</li>
+<li>Vous pouvez lui donner un fichier prédéfini avec vos propres valeurs pour la distribution</li>
+<li>Plusieurs profils avec différents paramètres sont possibles</li>
+</ul>
+
+Bugs, demandes de fonctionnalités, questions - veuillez les soumettre à github.com/mendhak/gpslogger (issue tracker).
+
+<b>Notes</b>
+
+Une connexion de données est utilisée par cette application uniquement si vous utilisez les fonctions d'envoi automatique ou d'URL personnalisée.
+
+Bien que l'application permette des fréquences de 0 seconde, cela n'est pas recommandé car l'enregistrement et la journalisation se font très rapidement ; cela pourrait causer de l'instabilité/des blocages. Essayez plutôt 1-3 secondes.
+
+
+<b>Explication des permissions</b>
+
+Stockage - lecture et écriture de fichiers dans le dossier GPSLogger sur votre carte SD
+
+Communication réseau - utilisée lors du téléchargement des fichiers (Dropbox, Openstreetmap) ou de l'envoi d'e-mails ou de l'autorisation avec Dropbox, Openstreetmap
+
+Votre emplacement - utilisé pour déterminer votre emplacement par GPS ou par tour de contrôle
+
+Outils système (démarrage automatique au démarrage) - utilisés si vous choisissez de démarrer GPSLogger au démarrage.
+
+Autorisations de stockage partagé - dans Android 11, utilisées pour permettre l'écriture de fichiers dans des chemins de fichiers personnalisés.<li>

@@ -1,0 +1,6 @@
+* Android 10+ solicitará "permiso siempre" en el proceso de autorización
+* El proceso de autorización también solicita desactivar la optimización de la batería
+* En el proceso de autorización, también requiere permisos relacionados con restricciones de fondo.
+* Íconos adaptables gracias a @kanru
+* Se agregó una opción para restablecer la aplicación en la configuración general (elimina todos los archivos y permisos asociados con la aplicación)
+* Traducciones actualizadas de Crowdin

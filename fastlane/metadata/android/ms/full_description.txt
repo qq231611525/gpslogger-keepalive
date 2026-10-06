@@ -1,0 +1,47 @@
+Logger GPS yang ringan dan cekap bateri. Tujuan apl ini adalah untuk log koordinat GPS anda pada selang waktu tertentu ke fail pada kad SD anda. Apl ini berjalan di latar belakang supaya anda boleh berjalan jauh, mendaki, menaiki penerbangan atau sesi bergambar atau pergi membeli susu dan menjalankannya selama mungkin. Sebaik sahaja anda kembali ke komputer anda, anda kemudian boleh menggunakan fail untuk geotag foto, memuat naik ke tapak pelancongan, melihat dalam Google Earth dan sebagainya.
+
+
+Untuk mendapatkan maklumat lanjut, lihat <a href="https://gpslogger.app">https://gpslogger.app</a>
+
+<b>Nota</b>: Sila ingat untuk <b>Benarkan sepanjang masa</b> untuk apl ini dalam tetapan OS anda, untuk membolehkannya log lokasi di latar belakang.
+
+<b>Ciri-ciri</b>
+
+<ul>
+<li>Boleh log ke format GPX, KML, CSV, NMEA dan CSV. Juga boleh log ke URL tersuai atau hanya skrin.</li>
+<li>Merakam mata GPX sebagai trek dan segmen trek</li>
+<li>Juga mencatatkan kelajuan, arah dan ketinggian jika tersedia</li>
+<li>Tambahkan penerangan pada titik menggunakan menu anotasi, akan ditambahkan sebagai titik laluan</li>
+<li>Konfigurasikan selang masa antara titik</li>
+<li>Konfigurasikan penapis jarak minimum antara titik atau penapis ketepatan</li>
+<li>Ikon pemberitahuan dengan koordinat dan tindakan pantas</li>
+<li>Menggunakan menara sel untuk lokasi apabila GPS dilumpuhkan</li>
+<li>Pilih rangkaian, gps dan penyedia lokasi pasif secara terpilih</li>
+<li>Muat naik atau e-mel fail secara automatik pada selang masa yang ditetapkan ke destinasi seperti E-mel, FTP, Dropbox, OpenStreetMap, Google Drive, URL Tersuai.</li>
+<li>Kongsi lokasi atau fail log melalui SMS/E-mel (dan apl lain seperti Facebook atau Twitter bergantung pada apa yang telah anda pasang)</li>
+<li>Mula log pada but telefon</li>
+<li>Gunakan operasi daripada Tasker atau apl automasi lain.</li>
+<li>Anda boleh memberikannya fail pratetap dengan nilai anda sendiri untuk pengedaran</li>
+<li>Berbilang profil dengan tetapan berbeza boleh dilakukan</li>
+</ul>
+
+Pepijat, permintaan ciri, soalan - sila serahkannya ke github.com/mendhak/gpslogger (penjejak isu).
+
+<b>Nota</b>
+
+Sambungan data digunakan oleh apl ini hanya jika anda menggunakan ciri hantar automatik atau ciri URL Tersuai
+
+Walaupun aplikasi membenarkan 0 frekuensi saat, ia tidak disyorkan kerana rakaman dan pengelogan berlaku dengan sangat pantas; ini boleh menyebabkan ketidakstabilan/hang. Cuba 1-3 saat sebaliknya.
+
+
+<b>Penjelasan tentang kebenaran</b>
+
+Storan - membaca dan menulis fail ke folder GPSLogger pada kad SD anda
+
+Komunikasi rangkaian - digunakan semasa memuat naik fail (Dropbox, Openstreetmap) atau menghantar e-mel atau membenarkan anda dengan Dropbox, Openstreetmap
+
+Lokasi anda - digunakan untuk menentukan lokasi berasaskan GPS atau menara anda
+
+Alat sistem (mula secara automatik semasa but) - digunakan jika anda memilih untuk memulakan GPSLogger semasa but
+
+Kebenaran storan dikongsi - dalam Android 11, digunakan untuk membenarkan menulis fail ke laluan fail tersuai

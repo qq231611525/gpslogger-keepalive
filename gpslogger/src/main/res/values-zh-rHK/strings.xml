@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_drawer_uploadsettings">上傳設定</string>
+    <string name="navigation_drawer_open">打開巡覽列</string>
+    <string name="navigation_drawer_close">關閉巡覽列</string>
+    <string name="app_name_release">GPSLogger</string>
+    <string name="settings_screen_name">GPSLogger設定</string>
+    <string name="ok">確定</string>
+    <string name="cancel">取消</string>
+    <string name="could_not_write_to_file">無法寫入到檔案</string>
+    <string name="add_description">添加一個描述</string>
+    <string name="letters_numbers">只能使用英文字母和數位</string>
+    <string name="menu_annotate">注解</string>
+    <string name="menu_share">分享</string>
+    <string name="menu_exit">退出</string>
+    <!-- main form labels -->
+    <string name="txt_speed">速度：</string>
+    <!-- general -->
+    <string name="error">错误</string>
+    <string name="success">成功</string>
+    <!-- Settings activity -->
+    <!-- Settings -->
+    <string name="txt_longitude">經度：</string>
+    <string name="txt_altitude">海拔 ：</string>
+    <string name="txt_direction">方向：</string>
+    <string name="txt_accuracy">準確度：</string>
+    <string name="txt_travel_distance">已去過：</string>
+    <string name="btn_stop_logging">停止紀錄</string>
+    <string name="gpslogger_still_running">GPS記錄器仍在運行。</string>
+    <string name="hide">隱藏</string>
+    <string name="txt_latitude">緯度:</string>
+    <string name="txt_satellites">衛星：</string>
+    <string name="btn_start_logging">開始紀錄</string>
+
+
+
+
+
+
+</resources>

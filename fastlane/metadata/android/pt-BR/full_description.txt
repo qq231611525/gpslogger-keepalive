@@ -1,0 +1,47 @@
+Um rastrador de gps com baixo consumo de bateria. A finalidade deste app é registrar suas coordenadas do GPS em intervalos especificos em arquivo no cartão SD.  Este app é executado em segundo plano para que você possa usá-lo em uma longa caminhada, passeio de avião, sessão de fotos ou até mesmo quando faz compras ou corridas alcançando o maior tempo possível de duração de bateria.   Você pode fazer o upload dos arquivos a partir do seu computador e usar os arquivos para fazer geocaching, adicionar localização em fotos, além de ver os destinos no google earth.
+
+
+Para mais detalhes, veja <a href="https://gpslogger.app">https://gpslogger.app</a>
+
+<b>Aviso</b>: Por favor, lembre-se de conceder a opção de <b>Permitir sempre</b> em configurações do Android, para poder registrar localizações em segundo plano.
+
+<b>Funcionalidades</b>
+
+<ul>
+<li>Pode salvar em formatos GPX, KML, CSV, NMEA e CSV. Assim como em URL personalizada ou mostrar na tela.</li>
+<li>Registra posições do GPX como trilhos e segmentos de trilhos</li>
+<li>Também registra a velocidade, direção e altitude, se disponível</li>
+<li>Permite fazer uma descrição em uma posição usando a opção de anotar que é adicionada como um ponto de passagem</li>
+<li>Configurar os intervalos de tempo entre posições</li>
+<li>Configurar um filtro de distância mínima entre posições ou um filtro de precisão</li>
+<li>Mostra ícone de notificação com coordenadas e ações rápidas</li>
+<li>Utiliza torres de celular para localização quando o GPS é desativado</li>
+<li>Escolher seletivamente provedores de rede, gps e localização passiva</li>
+<li>Submeter automaticamente ou enviar o arquivo via e-mail em intervalos definidos para e-mail, FTP, Dropbox, OpenStreetMap, Google Drive, URL personalizada.</li>
+<li>Compartilhar arquivos de localização ou registros via SMS/Email (e outros apps como Facebook ou Twitter, dependendo que você tiver instalado)</li>
+<li>Auto executar na inicialização</li>
+<li>Invocar operações do Tasker ou outros apps de automação.</li>
+<li>Você pode carregar um arquivo pré-definido com seus próprios valores para divulgação</li>
+<li>Implantação de perfis múltiplos com diferentes configurações</li>
+</ul>
+
+Problemas, pedidos de funcionalidades, perguntas - por favor, posta no github.com/mendhak/gpslogger (rastreador de problemas).
+
+<b>Observações</b>
+
+Uma conexão de dados é usada somente se você usar funcionalidade de envio automático ou URL personalizada
+
+Embora o app permita frequências de 0-zero segundos, ela não é recomendada, pois os registros estão acontecendo muito rapidamente; isto poderia causar instabilidade/travamento. Use 1-3 segundos em vez disso.
+
+
+<b>Explicação das permissões</b>
+
+Armazenamento - leitura e gravação de arquivos para a pasta do GPSLogger no seu cartão SD
+
+Comunicação de rede - usado ao fazer upload dos arquivos (Dropbox, Openstreetmap) ou envio de e-mails ou confirmando autorização no Dropbox ou Openstreetmap
+
+Sua localização - usado para determinar a localização com base no seu GPS ou torre
+
+Ferramentas de sistema (executar automaticamente na inicialização) - usado se você optar por iniciar o GPSLogger na inicialização
+
+Permissões de armazenamento compartilhado - no Android 11, usado para permitir a gravação de arquivos em pastas da sua escolha

@@ -1,0 +1,1 @@
+Nenáročný GPS logger, šetriaci batériu, GPX/KML, poznámky, zdieľanie, upload.

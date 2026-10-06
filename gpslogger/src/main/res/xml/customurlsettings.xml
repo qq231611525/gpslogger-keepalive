@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreferenceCompat
+        android:key="log_customurl_enabled"
+        android:title="@string/log_customurl_title"
+        android:summary="@string/log_customurl_summary_detailed"
+        app:iconSpaceReserved="false" />
+
+    <SwitchPreferenceCompat
+        android:key="autocustomurl_enabled"
+        android:title="@string/autosend_enabled"
+        android:summary="@string/autosend_customurl_summary"
+        app:iconSpaceReserved="false" />
+
+    <SwitchPreferenceCompat
+        android:key="log_customurl_discard_offline_locations_enabled"
+        android:title="@string/log_customurl_discard_offline_locations"
+        android:summary="@string/log_customurl_discard_offline_locations_summary"
+        app:iconSpaceReserved="false" />
+
+    <Preference
+        android:key="log_customurl_url"
+        android:singleLine="true"
+        android:title="URL"
+        app:iconSpaceReserved="false" />
+
+    <Preference
+        android:enabled="true"
+        android:key="customurl_legend_1"
+        android:summary=""
+        android:title="@string/parameters"
+        app:iconSpaceReserved="false" />
+
+    <Preference
+        android:defaultValue=""
+        android:key="log_customurl_body"
+        android:selectAllOnFocus="true"
+        android:singleLine="false"
+        android:title="@string/customurl_http_body"
+        app:iconSpaceReserved="false" />
+
+    <Preference
+        android:defaultValue=""
+        android:hint="Content-Type: application/json\nAuthorization: Basic abcdefg\nApiToken: 12345"
+        android:key="log_customurl_headers"
+        android:selectAllOnFocus="true"
+        android:singleLine="false"
+        android:title="@string/customurl_http_headers"
+        app:iconSpaceReserved="false" />
+
+    <Preference
+        android:defaultValue="GET"
+        android:key="log_customurl_method"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/customurl_http_method"
+        app:iconSpaceReserved="false" />
+
+    <Preference
+        android:key="log_customurl_basicauth"
+        android:title="Basic Authentication"
+        app:iconSpaceReserved="false" />
+
+    <Preference
+        android:key="customurl_validatecustomsslcert"
+        android:title="@string/ssl_certificate_validate"
+        app:iconSpaceReserved="false" />
+
+    <Preference
+        android:key="custom_url_batch_size"
+        android:title="@string/customurl_autosend_batch_size"
+        app:iconSpaceReserved="false" />
+
+    <Preference
+        android:key="custom_url_sleep_ms"
+        android:title="@string/customurl_autosend_sleep"
+        app:iconSpaceReserved="false" />
+
+</PreferenceScreen>

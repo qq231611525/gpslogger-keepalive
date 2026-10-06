@@ -1,0 +1,9 @@
+* Perbaikan untuk unggahan ownCloud/NextCloud tidak berfungsi
+* Karena pembatasan penyimpanan Android yang baru, Anda hanya dapat menulis ke folder aplikasi itu sendiri
+
+* Di Android 10+, alur kerja izin sekarang akan meminta izin "izinkan sepanjang waktu".
+* Alur kerja izin juga akan meminta penonaktifan pengoptimalan baterai
+* Alur kerja izin mengganggu, maaf, ini diperlukan untuk membantu banyak permintaan dukungan terkait batasan latar belakang.
+* Ikon adaptif, terima kasih kepada @kanru
+* Menambahkan opsi untuk mengatur ulang aplikasi (menghapus semua file dan izin untuk aplikasi), di pengaturan Umum
+* Terjemahan yang diperbarui dari Crowdin
