@@ -436,13 +436,7 @@ public class GpsLoggingService extends Service  {
         setupAutoSendTimers();
         setupSignificantMotionSensor();
 
-        // 保活：启动守护进程 + 调度 JobScheduler 兜底
-        try {
-            Intent guardIntent = new Intent(this, GuardService.class);
-            androidx.core.content.ContextCompat.startForegroundService(this, guardIntent);
-        } catch (Exception e) {
-            LOG.error("Could not start GuardService", e);
-        }
+        // 保活：调度 JobScheduler 兜底
         try {
             KeepAliveJobService.schedule(this);
         } catch (Exception e) {

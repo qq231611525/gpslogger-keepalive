@@ -52,12 +52,7 @@
             </intent-filter>
         </service>
 
-        <!-- 保活：守护进程服务，独立进程，定时检查并拉起主服务 -->
-        <service android:name=".GuardService"
-            android:exported="false"
-            android:stopWithTask="false"
-            android:process=":guard" />
-
+        <!-- 保活：JobScheduler 兜底服务，定时检查并拉起主服务 -->
         <!-- 保活：JobScheduler 兜底，系统级定时巡检 -->
         <service android:name=".KeepAliveJobService"
             android:exported="false"

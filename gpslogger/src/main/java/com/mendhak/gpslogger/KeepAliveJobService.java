@@ -61,13 +61,6 @@ public class KeepAliveJobService extends JobService {
                 LOG.error("KeepAlive restart failed", e);
             }
         }
-        // 确保守护进程也在跑
-        try {
-            Intent guardIntent = new Intent(this, GuardService.class);
-            ContextCompat.startForegroundService(this, guardIntent);
-        } catch (Exception e) {
-            LOG.error("KeepAlive guard start failed", e);
-        }
         jobFinished(params, false);
         return false;
     }
