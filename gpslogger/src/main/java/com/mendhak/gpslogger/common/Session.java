@@ -106,9 +106,12 @@ public class Session {
      */
     public void setStarted(boolean isStarted) {
 
+        boolean wasStarted = isStarted();
+
         set("LOGGING_STARTED", String.valueOf(isStarted));
 
-        if (isStarted) {
+        // 只有从"停止"变为"开始"时才重置时间戳，避免重复调用 startLogging() 时时长重计
+        if (isStarted && !wasStarted) {
             set("startTimeStamp", String.valueOf(System.currentTimeMillis()));
         }
     }
