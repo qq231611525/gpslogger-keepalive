@@ -602,12 +602,12 @@ public class GpsLoggingService extends Service  {
         PendingIntent pending = stackBuilder.getPendingIntent(0, flags);
 
         CharSequence contentTitle = getString(R.string.gpslogger_still_running);
-        CharSequence contentText = getString(R.string.app_name_release);
+        CharSequence contentText = "";
         long notificationTime = System.currentTimeMillis();
 
-        // 通知栏只显示时长
+        // 通知栏极简：只显示时长数字，不加提示词
         String duration = Strings.getDescriptiveDurationString((int) (System.currentTimeMillis() - session.getStartTimeStamp()) / 1000, this);
-        contentTitle = getString(R.string.txt_travel_duration) + " " + duration;
+        contentTitle = duration;
         if (session.hasValidLocation()) {
             notificationTime = session.getCurrentLocationInfo().getTime();
         }

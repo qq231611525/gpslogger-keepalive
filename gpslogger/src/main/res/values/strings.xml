@@ -20,6 +20,8 @@
     <string name="menu_share">Share</string>
     <string name="menu_export_config">导出配置</string>
     <string name="menu_import_config">导入配置</string>
+    <string name="menu_export_short">导出</string>
+    <string name="menu_import_short">导入</string>
     <string name="menu_keepalive_notify">保活通知设置</string>
     <string name="keepalive_notify_title">保活重启通知</string>
     <string name="keepalive_notify_hint">重启后自动 GET 请求的 URL，留空则不推送，例如:\nhttp://www.pushplus.plus/send?token=xxx&amp;title=标题&amp;content=内容</string>
