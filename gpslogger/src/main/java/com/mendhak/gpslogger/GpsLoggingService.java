@@ -627,10 +627,8 @@ public class GpsLoggingService extends Service  {
             notificationTime = session.getCurrentLocationInfo().getTime();
         }
 
-        // 通知副标题追加保活重启次数
-        if (restartCount > 0) {
-            contentText = contentText + " · 保活重启" + restartCount + "次";
-        }
+        // 通知副标题追加保活重启次数（始终显示，0次也显示）
+        contentText = contentText + " · 保活重启" + restartCount + "次";
 
         if (nfc == null) {
 
