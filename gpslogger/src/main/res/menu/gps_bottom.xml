@@ -4,6 +4,5 @@
 
     <item android:id="@+id/mnuExportConfig" android:title="@string/menu_export_config" app:showAsAction="always" />
     <item android:id="@+id/mnuImportConfig" android:title="@string/menu_import_config" app:showAsAction="always" />
-    <item android:id="@+id/mnuKeepAliveNotify" android:title="@string/menu_keepalive_notify" app:showAsAction="always" />
 
 </menu>
