@@ -1083,18 +1083,8 @@ public class GpsMainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // 底部栏已改为 LinearLayout 双按钮，直接绑点击事件
-        findViewById(R.id.btnExportConfig).setOnClickListener(v -> {
-            if (!isUserAllowedToChangePreferences()) {
-                return;
-            }
-            exportConfig();
-        });
-        findViewById(R.id.btnImportConfig).setOnClickListener(v -> {
-            if (!isUserAllowedToChangePreferences()) {
-                return;
-            }
-            importConfig();
-        });
+        findViewById(R.id.btnExportConfig).setOnClickListener(v -> exportConfig());
+        findViewById(R.id.btnImportConfig).setOnClickListener(v -> importConfig());
 
         enableDisableMenuItems();
         return true;
@@ -1107,8 +1097,6 @@ public class GpsMainActivity extends AppCompatActivity
 
         // 底部栏已改为双按钮，无需菜单项启停逻辑
     }
-
-    @Override
 
 
     private void forceAutoSendNow() {
