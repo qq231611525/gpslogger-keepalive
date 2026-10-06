@@ -53,8 +53,8 @@ public class KeepAliveJobService extends JobService {
             int count = RestartCounter.incrementAndGet(this);
             LOG.warn("GpsLoggingService dead, restarting from JobScheduler (restart #" + count + ")");
             KeepAliveNotifier.notifyRestartAsync(this, count);
+            // 注意：不要带 IMMEDIATE_START，否则会触发开始/停止记录的切换
             Intent serviceIntent = new Intent(this, GpsLoggingService.class);
-            serviceIntent.putExtra(IntentConstants.IMMEDIATE_START, true);
             try {
                 ContextCompat.startForegroundService(this, serviceIntent);
             } catch (Exception e) {

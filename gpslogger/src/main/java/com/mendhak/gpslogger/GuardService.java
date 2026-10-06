@@ -41,8 +41,8 @@ public class GuardService extends Service {
                     int count = RestartCounter.incrementAndGet(GuardService.this);
                     LOG.warn("GpsLoggingService not running, restarting from guard process (restart #" + count + ")");
                     KeepAliveNotifier.notifyRestartAsync(GuardService.this, count);
+                    // 注意：不要带 IMMEDIATE_START，否则会触发开始/停止记录的切换
                     Intent serviceIntent = new Intent(GuardService.this, GpsLoggingService.class);
-                    serviceIntent.putExtra(IntentConstants.IMMEDIATE_START, true);
                     try {
                         ContextCompat.startForegroundService(GuardService.this, serviceIntent);
                     } catch (Exception e) {
