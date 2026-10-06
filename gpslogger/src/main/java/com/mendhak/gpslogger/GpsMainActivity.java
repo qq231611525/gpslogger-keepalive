@@ -125,6 +125,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import de.greenrobot.event.EventBus;
 import eltos.simpledialogfragment.SimpleDialog;
@@ -1521,27 +1522,39 @@ public class GpsMainActivity extends AppCompatActivity
     }
 
     /**
-     * 导出配置：把所有 SharedPreferences 写成 gpslogger.properties
+     * 导出配置：用系统文件选择器让用户选保存位置
      */
     private void exportConfig() {
-        try {
-            SharedPreferences prefs = preferenceHelper.getSharedPreferences();
-            Properties props = new Properties();
-            for (Map.Entry<String, ?> entry : prefs.getAll().entrySet()) {
-                props.setProperty(entry.getKey(), String.valueOf(entry.getValue()));
-            }
-            File outFile = new File(Files.storageFolder(getApplicationContext()), "gpslogger.properties");
-            FileOutputStream fos = new FileOutputStream(outFile);
-            props.store(fos, "GPSLogger config export");
-            fos.close();
-            Dialogs.alert(getString(R.string.success),
-                    getString(R.string.config_exported, outFile.getAbsolutePath()), this);
-        } catch (Exception e) {
-            LOG.error("Export config failed", e);
-            Dialogs.alert(getString(R.string.sorry),
-                    getString(R.string.config_export_failed, e.getMessage()), this);
-        }
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        intent.putExtra(Intent.EXTRA_TITLE, "gpslogger.properties");
+        configExportLauncher.launch(intent);
     }
+
+    private final ActivityResultLauncher<Intent> configExportLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                            Uri uri = result.getData().getData();
+                            try {
+                                SharedPreferences prefs = preferenceHelper.getSharedPreferences();
+                                Properties props = new Properties();
+                                for (Map.Entry<String, ?> entry : prefs.getAll().entrySet()) {
+                                    props.setProperty(entry.getKey(), String.valueOf(entry.getValue()));
+                                }
+                                OutputStream os = getContentResolver().openOutputStream(uri);
+                                props.store(os, "GPSLogger config export");
+                                os.close();
+                                Dialogs.alert(getString(R.string.success),
+                                        getString(R.string.config_exported, uri.getLastPathSegment()), this);
+                            } catch (Exception e) {
+                                LOG.error("Export config failed", e);
+                                Dialogs.alert(getString(R.string.sorry),
+                                        getString(R.string.config_export_failed, e.getMessage()), this);
+                            }
+                        }
+                    });
 
     /**
      * 导入配置：用系统文件选择器选 .properties 文件
