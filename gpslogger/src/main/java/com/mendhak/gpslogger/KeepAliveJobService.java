@@ -52,6 +52,7 @@ public class KeepAliveJobService extends JobService {
         if (!isServiceRunning(GpsLoggingService.class)) {
             int count = RestartCounter.incrementAndGet(this);
             LOG.warn("GpsLoggingService dead, restarting from JobScheduler (restart #" + count + ")");
+            KeepAliveNotifier.notifyRestartAsync(this, count);
             Intent serviceIntent = new Intent(this, GpsLoggingService.class);
             serviceIntent.putExtra(IntentConstants.IMMEDIATE_START, true);
             try {

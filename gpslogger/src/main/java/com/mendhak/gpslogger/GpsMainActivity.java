@@ -632,6 +632,46 @@ public class GpsMainActivity extends AppCompatActivity
     }
 
     /**
+     * 保活通知设置对话框：输入重启后推送的 URL
+     */
+    private void showKeepAliveNotifyDialog() {
+        final android.widget.EditText input = new android.widget.EditText(this);
+        input.setHint(getString(R.string.keepalive_notify_hint));
+        input.setText(KeepAliveNotifier.getUrl(this));
+        input.setSingleLine(false);
+        input.setLines(3);
+        int padding = (int) (16 * getResources().getDisplayMetrics().density);
+        input.setPadding(padding, padding, padding, padding);
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(getString(R.string.keepalive_notify_title))
+                .setView(input)
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    KeepAliveNotifier.setUrl(this, input.getText().toString());
+                    Dialogs.alert(getString(R.string.success),
+                            getString(R.string.keepalive_notify_saved), this);
+                })
+                .setNeutralButton(getString(R.string.keepalive_notify_test), (dialog, which) -> {
+                    String url = input.getText().toString().trim();
+                    KeepAliveNotifier.setUrl(this, url);
+                    new Thread(() -> {
+                        String err = KeepAliveNotifier.notifyTestSync(url);
+                        runOnUiThread(() -> {
+                            if (err == null) {
+                                Dialogs.alert(getString(R.string.success),
+                                        getString(R.string.keepalive_notify_test_ok), this);
+                            } else {
+                                Dialogs.alert(getString(R.string.sorry),
+                                        getString(R.string.keepalive_notify_test_fail, err), this);
+                            }
+                        });
+                    }).start();
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    /**
      * Handles the hardware back-button press
      */
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -1251,6 +1291,9 @@ public class GpsMainActivity extends AppCompatActivity
                 return true;
             case R.id.mnuImportConfig:
                 importConfig();
+                return true;
+            case R.id.mnuKeepAliveNotify:
+                showKeepAliveNotifyDialog();
                 return true;
             case R.id.mnuOSM:
                 uploadToOpenStreetMap();
