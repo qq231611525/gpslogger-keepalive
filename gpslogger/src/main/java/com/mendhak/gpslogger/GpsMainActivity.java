@@ -1029,18 +1029,6 @@ public class GpsMainActivity extends AppCompatActivity
                         .withIdentifier(102)
                         .withName(getString(R.string.profile_add_from_url))
                         .withTag("PROFILE_URL")
-                ,
-                new ProfileSettingDrawerItem()
-                        .withIcon(R.drawable.download_outline)
-                        .withIdentifier(103)
-                        .withName(getString(R.string.save))
-                        .withTag("PROFILE_SAVE")
-                ,
-                new ProfileSettingDrawerItem()
-                        .withIcon(R.drawable.share)
-                        .withIdentifier(104)
-                        .withName(getString(R.string.menu_share))
-                        .withTag("PROFILE_SHARE")
 
         );
 
