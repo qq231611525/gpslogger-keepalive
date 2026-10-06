@@ -36,12 +36,13 @@ public class KeepAliveNotifier {
             return;
         }
         // 把重启次数拼到 URL 上，方便模板使用（如果 URL 已有 restart 参数则不重复加）
-        final String finalUrl;
+        final String baseUrl;
         if (url.contains("restartCount") || url.contains("restart_count")) {
-            finalUrl = url;
+            baseUrl = url;
         } else {
-            finalUrl = url + (url.contains("?") ? "&" : "?") + "restartCount=" + restartCount;
+            baseUrl = url + (url.contains("?") ? "&" : "?") + "restartCount=" + restartCount;
         }
+        final String finalUrl = encodeUrl(baseUrl);
 
         new Thread(() -> {
             HttpURLConnection conn = null;
@@ -68,13 +69,60 @@ public class KeepAliveNotifier {
     }
 
     /**
+     * 对 URL 的 query 参数做百分号编码（中文标题内容常见）
+     */
+    private static String encodeUrl(String url) {
+        try {
+            int qIndex = url.indexOf('?');
+            if (qIndex < 0) {
+                return url;
+            }
+            String base = url.substring(0, qIndex);
+            String query = url.substring(qIndex + 1);
+            StringBuilder sb = new StringBuilder(base).append('?');
+            String[] pairs = query.split("&");
+            for (int i = 0; i < pairs.length; i++) {
+                String pair = pairs[i];
+                int eq = pair.indexOf('=');
+                if (eq < 0) {
+                    sb.append(encodeComponent(pair));
+                } else {
+                    sb.append(encodeComponent(pair.substring(0, eq)));
+                    sb.append('=');
+                    sb.append(encodeComponent(pair.substring(eq + 1)));
+                }
+                if (i < pairs.length - 1) {
+                    sb.append('&');
+                }
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            Log.w(TAG, "URL encode failed, using raw: " + e.getMessage());
+            return url;
+        }
+    }
+
+    private static String encodeComponent(String s) {
+        try {
+            // URLEncoder 会把空格编成 +，对 query 参数是合法的；但为避免二次编码，先判断
+            String encoded = java.net.URLEncoder.encode(s, "UTF-8");
+            // 已经是 %XX 形式的不要重复编码
+            return encoded.replace("%25", "%");
+        } catch (Exception e) {
+            return s;
+        }
+    }
+
+    /**
      * 同步发送一次，用于测试按钮（调用方需在后台线程调用）
-     * @return 成功返回 true，失败返回错误信息
+     * @return 成功返回 null，失败返回错误信息
      */
     public static String notifyTestSync(String url) {
         HttpURLConnection conn = null;
         try {
-            conn = (HttpURLConnection) new URL(url).openConnection();
+            String encodedUrl = encodeUrl(url);
+            Log.i(TAG, "Test notify URL: " + encodedUrl);
+            conn = (HttpURLConnection) new URL(encodedUrl).openConnection();
             conn.setRequestMethod("GET");
             conn.setConnectTimeout(15000);
             conn.setReadTimeout(15000);
