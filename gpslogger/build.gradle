@@ -45,13 +45,22 @@ android {
 
         targetSdkVersion 35
         compileSdk 35
-        versionCode 154
-        versionName "154-keepalive"
+        versionCode 155
+        versionName "155-keepalive"
 
         // Used by AppAuth-Android
         manifestPlaceholders = [
                 appAuthRedirectScheme: 'com.mendhak.gpslogger'
         ]
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
     }
 
     buildTypes {
@@ -60,6 +69,7 @@ android {
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.txt'
             debuggable true
+            signingConfig signingConfigs.debug
             applicationIdSuffix ".debug"
             versionNameSuffix "-DEBUG"
             resValue "string", "app_name", "@string/app_name_debug"
