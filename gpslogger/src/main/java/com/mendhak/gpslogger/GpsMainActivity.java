@@ -1528,7 +1528,8 @@ public class GpsMainActivity extends AppCompatActivity
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
-        intent.putExtra(Intent.EXTRA_TITLE, "gpslogger.properties");
+        String timeStamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(new java.util.Date());
+        intent.putExtra(Intent.EXTRA_TITLE, "gpslogger_" + timeStamp + ".properties");
         configExportLauncher.launch(intent);
     }
 
