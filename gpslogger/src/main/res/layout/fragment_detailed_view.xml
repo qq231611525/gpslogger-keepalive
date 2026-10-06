@@ -30,14 +30,13 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/txt_latitude"
-                    android:textSize="13sp"
                     android:id="@+id/detailedview_lat_label"/>
 
                 <EditText
                     android:layout_width="0dp"
                     android:layout_weight="75"
                     android:layout_height="wrap_content"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/detailedview_latlong_textsize"
                     android:id="@+id/detailedview_lat_text"
                     android:text=""
                     android:maxLines="1"
@@ -59,14 +58,13 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/txt_longitude"
-                    android:textSize="13sp"
                     android:id="@+id/detailedview_lon_label"/>
 
                 <EditText
                     android:layout_width="0dp"
                     android:layout_weight="75"
                     android:layout_height="wrap_content"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/detailedview_latlong_textsize"
                     android:text=""
                     android:maxLines="1"
                     android:id="@+id/detailedview_lon_text"
@@ -88,7 +86,7 @@
         android:layout_marginBottom="4dp"
         android:text="@string/btn_start_logging"
         android:textColor="@android:color/white"
-        android:textSize="16sp"
+        android:textSize="18sp"
         custom:pb_colorComplete="@color/green_complete"
         custom:pb_colorNormal="@color/accentColorComplementary"
         custom:pb_colorPressed="@color/blue_pressed"
@@ -116,7 +114,6 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/detailedview_datetime_text"
                 android:text=""
-                android:textSize="13sp"
                 android:selectAllOnFocus="true"
                 android:textIsSelectable="true"
                 android:editable="false"
@@ -133,7 +130,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/txt_altitude"
-                    android:textSize="13sp"
                     android:id="@+id/detailedview_altitude_label"/>
                 <EditText
                     android:layout_width="0dp"
@@ -141,7 +137,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/detailedview_altitude_text"
                     android:text=""
-                    android:textSize="13sp"
                     android:selectAllOnFocus="true"
                     android:textIsSelectable="true"
                     android:editable="false"
@@ -159,7 +154,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/txt_speed"
-                    android:textSize="13sp"
                     android:id="@+id/detailedview_speed_label"/>
                 <EditText
                     android:layout_width="0dp"
@@ -167,7 +161,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/detailedview_speed_text"
                     android:text=""
-                    android:textSize="13sp"
                     android:selectAllOnFocus="true"
                     android:textIsSelectable="true"
                     android:editable="false"
@@ -185,7 +178,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/txt_direction"
-                    android:textSize="13sp"
                     android:id="@+id/detailedview_direction_label"/>
                 <EditText
                     android:layout_width="0dp"
@@ -193,7 +185,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/detailedview_direction_text"
                     android:text=""
-                    android:textSize="13sp"
                     android:selectAllOnFocus="true"
                     android:textIsSelectable="true"
                     android:editable="false"
@@ -211,7 +202,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/txt_satellites"
-                    android:textSize="13sp"
                     android:id="@+id/detailedview_satellites_label"/>
                 <EditText
                     android:layout_width="0dp"
@@ -219,7 +209,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/detailedview_satellites_text"
                     android:text=""
-                    android:textSize="13sp"
                     android:selectAllOnFocus="true"
                     android:textIsSelectable="true"
                     android:editable="false"
@@ -237,7 +226,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/txt_accuracy"
-                    android:textSize="13sp"
                     android:id="@+id/detailedview_accuracy_label"/>
                 <EditText
                     android:layout_width="0dp"
@@ -245,7 +233,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/detailedview_accuracy_text"
                     android:text=""
-                    android:textSize="13sp"
                     android:selectAllOnFocus="true"
                     android:textIsSelectable="true"
                     android:editable="false"
@@ -263,7 +250,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/txt_travel_distance"
-                    android:textSize="13sp"
                     android:id="@+id/detailedview_travelled_label"/>
                 <EditText
                     android:layout_width="0dp"
@@ -271,7 +257,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/detailedview_travelled_text"
                     android:text=""
-                    android:textSize="13sp"
                     android:selectAllOnFocus="true"
                     android:textIsSelectable="true"
                     android:editable="false"
@@ -289,7 +274,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/txt_travel_duration"
-                    android:textSize="13sp"
                     android:id="@+id/detailedview_duration_label"/>
                 <EditText
                     android:layout_width="0dp"
@@ -297,7 +281,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/detailedview_duration_text"
                     android:text=""
-                    android:textSize="12sp"
                     android:selectAllOnFocus="true"
                     android:textIsSelectable="true"
                     android:editable="false"
@@ -329,7 +312,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/summary_loggingto"
-                    android:textSize="13sp"
                     android:id="@+id/detailedview_loggingto_label"/>
                 <EditText
                     android:layout_width="0dp"
@@ -337,7 +319,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/detailedview_loggingto_text"
                     android:text=""
-                    android:textSize="13sp"
                     android:selectAllOnFocus="true"
                     android:textIsSelectable="true"
                     android:editable="false"
@@ -355,7 +336,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/summary_freq_every"
-                    android:textSize="13sp"
                     android:id="@+id/detailedview_frequency_label"/>
                 <EditText
                     android:layout_width="0dp"
@@ -363,7 +343,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/detailedview_frequency_text"
                     android:text=""
-                    android:textSize="13sp"
                     android:selectAllOnFocus="true"
                     android:textIsSelectable="true"
                     android:editable="false"
@@ -381,7 +360,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/summary_dist"
-                    android:textSize="13sp"
                     android:id="@+id/detailedview_distance_label"/>
                 <EditText
                     android:layout_width="0dp"
@@ -389,7 +367,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/detailedview_distance_text"
                     android:text=""
-                    android:textSize="13sp"
                     android:selectAllOnFocus="true"
                     android:textIsSelectable="true"
                     android:editable="false"
@@ -407,14 +384,13 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/summary_current_filename"
-                    android:textSize="13sp"
                     android:id="@+id/detailedview_file_label"/>
                 <EditText
                     android:layout_width="0dp"
                     android:layout_weight="70"
                     android:layout_height="wrap_content"
                     android:id="@+id/detailedview_file_text"
-                    android:textSize="11sp"
+                    android:textSize="12sp"
                     android:text=""
                     android:selectAllOnFocus="true"
                     android:textIsSelectable="true"
@@ -433,7 +409,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/summary_autosend"
-                    android:textSize="13sp"
                     android:id="@+id/detailedview_autosend_label"/>
                 <EditText
                     android:layout_width="0dp"
@@ -441,7 +416,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/detailedview_autosend_text"
                     android:text=""
-                    android:textSize="13sp"
                     android:selectAllOnFocus="true"
                     android:textIsSelectable="true"
                     android:editable="false"
@@ -459,7 +433,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/summary_autosendtargets"
-                    android:textSize="13sp"
                     android:id="@+id/detailedview_autosendtargets_label"/>
                 <EditText
                     android:layout_width="0dp"
@@ -467,7 +440,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/detailedview_autosendtargets_text"
                     android:text=""
-                    android:textSize="13sp"
                     android:selectAllOnFocus="true"
                     android:textIsSelectable="true"
                     android:editable="false"
