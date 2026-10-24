@@ -95,6 +95,21 @@
                 android:focusable="true"
                 android:background="?attr/selectableItemBackground"
                 />
+            <TextView
+                android:id="@+id/btnAccessibility"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:text="@string/menu_accessibility"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                />
         </LinearLayout>
     </FrameLayout>
 

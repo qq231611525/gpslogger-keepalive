@@ -30,6 +30,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <!-- 保活：申请忽略电池优化 -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <!-- 保活：闹钟巡检(精确闹钟, 未授权时退为非精确) -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
@@ -57,6 +59,22 @@
         <service android:name=".KeepAliveJobService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <!-- 保活：无障碍服务, 系统长期绑定, 常规清理难杀死(不读屏幕内容) -->
+        <service android:name=".KeepaliveAccessibilityService"
+            android:exported="false"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
+
+        <!-- 保活：闹钟巡检, 与 JobScheduler 错开时间双保险 -->
+        <receiver android:name=".KeepAliveAlarmReceiver"
+            android:exported="false" />
 
 
 

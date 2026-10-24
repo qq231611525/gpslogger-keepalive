@@ -1089,9 +1089,18 @@ public class GpsMainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        // 底部栏已改为 LinearLayout 双按钮，直接绑点击事件
+        // 底部栏已改为 LinearLayout 按钮，直接绑点击事件
         findViewById(R.id.btnExportConfig).setOnClickListener(v -> exportConfig());
         findViewById(R.id.btnImportConfig).setOnClickListener(v -> importConfig());
+        // 保活：无障碍保活入口, 打开系统无障碍设置让用户开启
+        findViewById(R.id.btnAccessibility).setOnClickListener(v -> {
+            try {
+                startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+                Toast.makeText(this, "在列表里找到「GPSLogger 保活」并开启", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Toast.makeText(this, "请手动打开：设置 → 无障碍 → GPSLogger 保活", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         enableDisableMenuItems();
         return true;

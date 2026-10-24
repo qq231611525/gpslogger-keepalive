@@ -443,6 +443,13 @@ public class GpsLoggingService extends Service  {
             LOG.error("Could not schedule KeepAlive job", e);
         }
 
+        // 保活：同时布防闹钟巡检(与 Job 错开时间, 双保险)
+        try {
+            KeepAliveAlarmReceiver.schedule(this);
+        } catch (Exception e) {
+            LOG.error("Could not schedule KeepAlive alarm", e);
+        }
+
         resetCurrentFileName(Strings.isNullOrEmpty(session.getCurrentFormattedFileName()));
 
         notifyClientsStarted(true);

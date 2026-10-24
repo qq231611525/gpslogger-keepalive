@@ -23,6 +23,8 @@
     <string name="menu_export_short">导出</string>
     <string name="menu_import_short">导入</string>
     <string name="menu_keepalive_notify">保活通知设置</string>
+    <string name="menu_accessibility">无障碍保活</string>
+    <string name="a11y_desc">GPSLogger 保活守护：开启后系统会把 GPSLogger 当作无障碍服务长期驻留，常规清理很难杀死，记录中断时自动拉回。本服务不读取、不处理任何屏幕内容。</string>
     <string name="keepalive_notify_title">保活重启通知</string>
     <string name="keepalive_notify_hint">重启后自动 GET 请求的 URL，留空则不推送，例如:\nhttp://www.pushplus.plus/send?token=xxx&amp;title=标题&amp;content=内容</string>
     <string name="keepalive_notify_saved">已保存</string>

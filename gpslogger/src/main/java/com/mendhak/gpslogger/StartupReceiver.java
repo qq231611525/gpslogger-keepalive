@@ -35,6 +35,12 @@ public class StartupReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        // 保活：闹钟不 survive 重启, 开机后重新布防(Job 是持久化的, 闹钟不是)
+        try {
+            KeepAliveAlarmReceiver.schedule(context);
+        } catch (Exception ex) {
+            LOG.error("KeepAlive alarm reschedule", ex);
+        }
         try {
             boolean startImmediately = PreferenceHelper.getInstance().shouldStartLoggingOnBootup();
 
