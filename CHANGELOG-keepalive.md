@@ -4,6 +4,10 @@
 > 构建方式：推送到 `main` 后 GitHub Actions 的 `Build Debug APK` workflow 自动构建，产物名 `gpslogger-keepalive-debug`。
 > 用户要求：每次迭代递增版本号（138-keepalive、139-keepalive…），支持覆盖安装。
 
+## 166-keepalive（2026-10-24）
+- 新：底部栏「无障碍保活」按钮实时显示开启状态（已开启绿字/未开启白字，从系统设置回来自动刷新），不用再进设置页确认。
+- 改：交付 APK 文件名带版本号（如 GPSLogger-keepalive-166.apk），不再用无版本号的文件名覆盖。
+
 ## 165-keepalive（2026-10-24）
 - 新：闹钟巡检（KeepAliveAlarmReceiver）：开始记录时布防，5 分钟后首响，之后每 10 分钟自链，与 JobScheduler 15 分钟巡检错开双保险；开机后重新布防（闹钟不 survive 重启）；精确闹钟未授权时退为非精确闹钟。拉起一律空 Intent，不碰记录开关（144 的教训）。
 - 新：无障碍保活（KeepaliveAccessibilityService + 底部栏「无障碍保活」入口）：系统长期绑定，常规清理难杀死，5 分钟巡检拉回；不读屏幕内容。核心价值是让系统不杀进程，拉回是附加，安卓 12+ 后台启动限制下可能被挡，由 Job/闹钟补位。

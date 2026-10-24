@@ -32,6 +32,10 @@ import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
+import android.view.accessibility.AccessibilityServiceInfo;
+import android.widget.TextView;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -573,6 +577,8 @@ public class GpsMainActivity extends AppCompatActivity
 
         populateProfilesList();
         enableDisableMenuItems();
+        // 保活：从系统设置回来时刷新无障碍状态提示
+        refreshAccessibilityStatus();
     }
 
 
@@ -1101,6 +1107,7 @@ public class GpsMainActivity extends AppCompatActivity
                 Toast.makeText(this, "请手动打开：设置 → 无障碍 → GPSLogger 保活", Toast.LENGTH_SHORT).show();
             }
         });
+        refreshAccessibilityStatus();
 
         enableDisableMenuItems();
         return true;
@@ -1572,6 +1579,44 @@ public class GpsMainActivity extends AppCompatActivity
             }
         } catch (Exception e) {
             LOG.warn("Battery optimization check failed", e);
+        }
+    }
+
+    /**
+     * 保活：无障碍保活服务是否已开启(供底部栏状态提示)。
+     * 服务 ID 格式为 包名/服务类名, debug 包名带 .debug 后缀, 故动态拼接,
+     * 不需要任何权限即可查询。
+     */
+    private boolean isAccessibilityServiceEnabled() {
+        try {
+            AccessibilityManager am = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
+            if (am == null) return false;
+            String expectedId = getPackageName() + "/com.mendhak.gpslogger.KeepaliveAccessibilityService";
+            for (AccessibilityServiceInfo info : am.getEnabledAccessibilityServiceList(AccessibilityEvent.TYPES_ALL_MASK)) {
+                if (expectedId.equals(info.getId())) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            LOG.warn("Check accessibility service status failed", e);
+        }
+        return false;
+    }
+
+    /** 保活：刷新底部栏无障碍按钮的状态提示(已开启绿字/未开启白字) */
+    private void refreshAccessibilityStatus() {
+        try {
+            TextView btn = findViewById(R.id.btnAccessibility);
+            if (btn == null) return;
+            if (isAccessibilityServiceEnabled()) {
+                btn.setText("无障碍保活 ●已开启");
+                btn.setTextColor(0xFF8BC34A);
+            } else {
+                btn.setText("无障碍保活 ○未开启");
+                btn.setTextColor(0xFFFFFFFF);
+            }
+        } catch (Exception e) {
+            LOG.warn("Refresh accessibility status failed", e);
         }
     }
 
