@@ -4,6 +4,9 @@
 > 构建方式：推送到 `main` 后 GitHub Actions 的 `Build Debug APK` workflow 自动构建，产物名 `gpslogger-keepalive-debug`。
 > 用户要求：每次迭代递增版本号（138-keepalive、139-keepalive…），支持覆盖安装。
 
+## 167-keepalive（2026-10-24）
+- 改：底部栏按方案A改为两行式——上行导出/导入，下行无障碍保活独占整行（中间 1dp 分隔线），状态文字不再被挤成两行；三个按钮 ID 不变，点击与状态刷新逻辑不动。
+
 ## 166-keepalive（2026-10-24）
 - 新：底部栏「无障碍保活」按钮实时显示开启状态（已开启绿字/未开启白字，从系统设置回来自动刷新），不用再进设置页确认。
 - 改：交付 APK 文件名带版本号（如 GPSLogger-keepalive-166.apk），不再用无版本号的文件名覆盖。

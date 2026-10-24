@@ -56,50 +56,61 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
         </FrameLayout>
+        <!-- 底部栏两行式(方案A): 上行导出/导入, 下行无障碍保活独占整行, 状态文字不再被挤 -->
         <LinearLayout
             android:id="@+id/toolbarBottom"
             android:layout_gravity="bottom"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:visibility="visible"
             android:background="@color/primaryColor"
             >
-            <TextView
-                android:id="@+id/btnExportConfig"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingTop="14dp"
-                android:paddingBottom="14dp"
-                android:text="@string/menu_export_short"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?attr/selectableItemBackground"
-                />
-            <TextView
-                android:id="@+id/btnImportConfig"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingTop="14dp"
-                android:paddingBottom="14dp"
-                android:text="@string/menu_import_short"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?attr/selectableItemBackground"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:id="@+id/btnExportConfig"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingTop="14dp"
+                    android:paddingBottom="14dp"
+                    android:text="@string/menu_export_short"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    />
+                <TextView
+                    android:id="@+id/btnImportConfig"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingTop="14dp"
+                    android:paddingBottom="14dp"
+                    android:text="@string/menu_import_short"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    />
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#4DFFFFFF"
                 />
             <TextView
                 android:id="@+id/btnAccessibility"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:gravity="center"
                 android:paddingTop="14dp"
                 android:paddingBottom="14dp"
