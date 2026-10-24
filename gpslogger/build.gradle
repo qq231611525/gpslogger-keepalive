@@ -198,9 +198,8 @@ dependencies {
     //Expandable textview in the FAQ
     implementation 'com.ms-square:expandableTextView:0.1.4'
 
-    //The single letter text icons
-    implementation 'com.github.amulyakhare:TextDrawable:558677ea31'
-
+    //The single letter text icons (vendored 2026-10-24: JitPack 产物已失效且无法重建,
+    //源码直接并入 com.amulyakhare.textdrawable, 见该包下 TextDrawable/ColorGenerator)
 
     //OKHTTP client
     // VULNERABLE DEPENDENCY
